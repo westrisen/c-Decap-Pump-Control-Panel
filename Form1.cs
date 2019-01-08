@@ -27,11 +27,18 @@ namespace Csharp_GUI
             {
                 ON_OFF_button.BackColor = Color.Lime;
                 ON_OFF_button.Text = "TURN OFF";
+                SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+                port.Open();
+                port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+                port.Write("PIN\r");
+                port.Write("PTS 5000 700 1\r");
+                port.Close();
             }
             else if (ON_OFF_button.Text == "TURN OFF")
             {
                 ON_OFF_button.BackColor = Color.Firebrick;
                 ON_OFF_button.Text = "TURN ON";
+                
             }
         }
 
@@ -78,43 +85,9 @@ namespace Csharp_GUI
             port.Open();
 
             // Write a string
-            //System.Threading.Thread.Sleep(1000);
-            //port.Write("kl\n");
-            //System.Threading.Thread.Sleep(1000);
-            //port.Write("kl\n");
-            //System.Threading.Thread.Sleep(1000);
-            //port.Write("cm\n");
-            //System.Threading.Thread.Sleep(1000);
-            //port.Write("cm\n");
-
-            //Convert.ToByte("k");
-            char[] kl = new char[3];
-            kl[0] = 'k';
-            kl[1] = 'l';
-            kl[2] = '\n';
-
-            char[] cm = new char[3];
-            kl[0] = 'c';
-            kl[1] = 'm';
-            kl[2] = '\n';
-            // Write a set of bytes
-            //port.Write(new byte[] { 0x63, 0x6D, 0xFF }, 0, 3);
-//            port.Write(new byte[] { 0x6B, 0x6C, 0xFF }, 0, 3);
-          //  System.Threading.Thread.Sleep(1000);
-           // port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-            //if (port.ReadChar() != 'A')
-            //{
-            //    port.Close();
-            //    throw new Exception("No acknowledge from target!");
-            //}
          //   System.Threading.Thread.Sleep(1000);
             port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-           // System.Threading.Thread.Sleep(1000);
             port.Write("cm\r");
-            //port.Write(new byte[] { 0x63, 0x6D, 0x0D }, 0, 3);
-          //  System.Threading.Thread.Sleep(1000);
-            //port.Write(new byte[] { 0x63, 0x6D, 0x0D }, 0, 3);
-            // Close the port
             port.Close();
         }
 
@@ -122,190 +95,6 @@ namespace Csharp_GUI
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
-        public class PortChat
-        {
-            static bool _continue;
-            static SerialPort _serialPort;
-
-            public static void Serial_Connection()
-            {
-                AllocConsole();
-                string name;
-                string message;
-                StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
-                Thread readThread = new Thread(Read);
-
-                // Create a new SerialPort object with default settings.
-                _serialPort = new SerialPort();
-
-                // Allow the user to set the appropriate properties.
-                _serialPort.PortName = SetPortName(_serialPort.PortName);
-                _serialPort.BaudRate = SetPortBaudRate(_serialPort.BaudRate);
-                _serialPort.Parity = SetPortParity(_serialPort.Parity);
-                _serialPort.DataBits = SetPortDataBits(_serialPort.DataBits);
-                _serialPort.StopBits = SetPortStopBits(_serialPort.StopBits);
-                _serialPort.Handshake = SetPortHandshake(_serialPort.Handshake);
-
-                // Set the read/write timeouts
-                _serialPort.ReadTimeout = 500;
-                _serialPort.WriteTimeout = 500;
-
-                _serialPort.Open();
-                _continue = true;
-                readThread.Start();
-                Console.Write("Name: ");
-                name = Console.ReadLine();
-                
-                Console.WriteLine("Type QUIT to exit");
-
-                while (_continue)
-                {
-                    message = Console.ReadLine();
-                    //message = "quit";
-                    if (stringComparer.Equals("quit", message))
-                    {
-                        _continue = false;
-                    }
-                    else
-                    {
-                        _serialPort.WriteLine(
-                            String.Format("<{0}>: {1}", name, message));
-                    }
-                }
-
-                readThread.Join();
-                _serialPort.Close();
-            }
-
-            public static void Read()
-            {
-                while (_continue)
-                {
-                    try
-                    {
-                        string message = _serialPort.ReadLine();
-                        Console.WriteLine(message);
-                    }
-                    catch (TimeoutException) { }
-                }
-            }
-
-            // Display Port values and prompt user to enter a port.
-            public static string SetPortName(string defaultPortName)
-            {
-                string portName;
-
-                Console.WriteLine("Available Ports:");
-                foreach (string s in SerialPort.GetPortNames())
-                {
-                    Console.WriteLine("   {0}", s);
-                }
-
-                Console.Write("Enter COM port value (Default: {0}): ", defaultPortName);
-                portName = Console.ReadLine();
-                portName = "COM2";
-                if (portName == "" || !(portName.ToLower()).StartsWith("com"))
-                {
-                    portName = defaultPortName;
-                }
-                return portName;
-            }
-            // Display BaudRate values and prompt user to enter a value.
-            public static int SetPortBaudRate(int defaultPortBaudRate)
-            {
-                string baudRate;
-
-                Console.Write("Baud Rate(default:{0}): ", defaultPortBaudRate);
-                baudRate = Console.ReadLine();
-                baudRate = "9600";
-                if (baudRate == "")
-                {
-                    baudRate = defaultPortBaudRate.ToString();
-                }
-
-                return int.Parse(baudRate);
-            }
-
-            // Display PortParity values and prompt user to enter a value.
-            public static Parity SetPortParity(Parity defaultPortParity)
-            {
-                string parity;
-
-                Console.WriteLine("Available Parity options:");
-                foreach (string s in Enum.GetNames(typeof(Parity)))
-                {
-                    Console.WriteLine("   {0}", s);
-                }
-
-                Console.Write("Enter Parity value (Default: {0}):", defaultPortParity.ToString(), true);
-                parity = Console.ReadLine();
-                parity = "None";
-                if (parity == "")
-                {
-                    parity = defaultPortParity.ToString();
-                }
-
-                return (Parity)Enum.Parse(typeof(Parity), parity, true);
-            }
-            // Display DataBits values and prompt user to enter a value.
-            public static int SetPortDataBits(int defaultPortDataBits)
-            {
-                string dataBits;
-
-                Console.Write("Enter DataBits value (Default: {0}): ", defaultPortDataBits);
-                dataBits = Console.ReadLine();
-                dataBits = "8";
-                if (dataBits == "")
-                {
-                    dataBits = defaultPortDataBits.ToString();
-                }
-
-                return int.Parse(dataBits.ToUpperInvariant());
-            }
-
-            // Display StopBits values and prompt user to enter a value.
-            public static StopBits SetPortStopBits(StopBits defaultPortStopBits)
-            {
-                string stopBits;
-
-                Console.WriteLine("Available StopBits options:");
-                foreach (string s in Enum.GetNames(typeof(StopBits)))
-                {
-                    Console.WriteLine("   {0}", s);
-                }
-
-                Console.Write("Enter StopBits value (None is not supported and \n" +
-                 "raises an ArgumentOutOfRangeException. \n (Default: {0}):", defaultPortStopBits.ToString());
-                stopBits = Console.ReadLine();
-                stopBits = "1";
-                if (stopBits == "")
-                {
-                    stopBits = defaultPortStopBits.ToString();
-                }
-
-                return (StopBits)Enum.Parse(typeof(StopBits), stopBits, true);
-            }
-            public static Handshake SetPortHandshake(Handshake defaultPortHandshake)
-            {
-                string handshake;
-
-                Console.WriteLine("Available Handshake options:");
-                foreach (string s in Enum.GetNames(typeof(Handshake)))
-                {
-                    Console.WriteLine("   {0}", s);
-                }
-
-                Console.Write("Enter Handshake value (Default: {0}):", defaultPortHandshake.ToString());
-                handshake = Console.ReadLine();
-                handshake = "None";
-                if (handshake == "")
-                {
-                    handshake = defaultPortHandshake.ToString();
-                }
-
-                return (Handshake)Enum.Parse(typeof(Handshake), handshake, true);
-            }
-        }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
@@ -350,6 +139,264 @@ namespace Csharp_GUI
         private void Disconnect_Button_Click(object sender, EventArgs e)
         {
             connection_status = 2;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+
+            port.Open();
+            //   System.Threading.Thread.Sleep(1000);
+            port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+            
+            port.Write("dcap 11\r");
+            port.Write("PIN\r");
+            port.Write("LHP 11\r");
+            port.Write("PTS 2000 700 1\r");
+            port.Write("rcap 11\r");
+
+            port.Close();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+
+            port.Open();
+            port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+
+            port.Write("to \r");
+            System.Threading.Thread.Sleep(6350);
+            port.Write("tc \r");
+
+            port.Close();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+
+            port.Open();
+            port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+
+            port.Write("dcap 11\r");
+            port.Write("pc 11 \r");
+            port.Write("gc 11 \r");
+            port.Write("rcap 11\r");
+
+            port.Close();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+            port.Open();
+            port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+            //port.Write("dcap 11\r");
+            //port.Write("pc 11 \r");
+            //port.Write("dcap 10\r");
+            //port.Write("pc 10 \r");
+            //port.Write("dcap 9\r");
+            //port.Write("pc 9 \r");
+            //port.Write("dcap 8\r");
+            //port.Write("pc 8 \r");
+            //port.Write("dcap 7\r");
+            //port.Write("pc 7 \r");
+            //port.Write("dcap 6\r");
+            //port.Write("pc 6 \r");
+            //port.Write("dcap 5\r");
+            //port.Write("pc 5 \r");
+            //port.Write("dcap 4\r");
+            //port.Write("pc 4 \r");
+            //port.Write("dcap 3\r");
+            //port.Write("pc 3 \r");
+            //port.Write("dcap 2\r");
+            //port.Write("pc 2 \r");
+            //port.Write("dcap 1\r");
+            //port.Write("pc 1 \r");
+            //port.Write("dcap 0\r");
+            //port.Write("pc 0 \r");
+
+            //port.Write("rcap 11\r");
+            //port.Write("pc 11 \r");
+            //port.Write("rcap 10\r");
+            //port.Write("pc 10 \r");
+            port.Write("rcap 9\r");
+            port.Write("gc 9 \r");
+            port.Write("rcap 8\r");
+            port.Write("gc 8 \r");
+            port.Write("rcap 7\r");
+            port.Write("gc 7 \r");
+            port.Write("rcap 6\r");
+            port.Write("gc 6 \r");
+            port.Write("rcap 5\r");
+            port.Write("gc 5 \r");
+            port.Write("rcap 4\r");
+            port.Write("gc 4 \r");
+            port.Write("rcap 3\r");
+            port.Write("gc 3 \r");
+            port.Write("rcap 2\r");
+            port.Write("gc 2 \r");
+            port.Write("rcap 1\r");
+            port.Write("gc 1 \r");
+            port.Write("rcap 0\r");
+            port.Write("gc 0 \r");
+            port.Close();
+        }
+
+        private void bulkfill_Click(object sender, EventArgs e)
+        {
+            SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+            port.Open();
+            port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+            port.Write("LHBF 1000 500\r");
+            port.Close();
+        }
+
+        private void tabPage4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+           
+            bool hyphen = false;
+            StringBuilder parameter = new StringBuilder();
+            StringBuilder command = new StringBuilder();
+            command.Append("rcap ");
+            StringBuilder forming_number_string = new StringBuilder();
+            string row_field = textBox8.Text + "\0";
+
+            //fire_commands("rcap ", row_field);
+
+
+            int max_rows = 11;
+            int forming_number = -1;
+
+            SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+            port.Open();
+            port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+            for (int i = 0; i < row_field.Length; i++)
+            {
+                if (System.Char.IsDigit(row_field, i) == true && forming_number == -1)
+                {
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = (int)char.GetNumericValue(row_field[i]);
+                    label9.Text = "isdigit" + forming_number.ToString();
+                }//if
+                else if (System.Char.IsDigit(row_field, i) == true)
+                {
+                    
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = forming_number * 10 + (int)char.GetNumericValue(row_field[i]);
+                    label9.Text = "multi_digit" + forming_number.ToString();
+                }
+                else if (hyphen == false && (row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
+                {
+                    
+                    if (forming_number > max_rows || forming_number == -1)
+                    {
+                        continue;
+                    }
+                    
+                    parameter.Append(forming_number_string);
+                    command.Append(parameter).Append("\r");
+                    port.Write("gc " + parameter.ToString() + "\r");
+                    //port.Write(get_cap.ToString());
+                    label9.Text = command.ToString();
+                    port.Write(command.ToString());
+
+                    parameter.Clear();
+                    command.Clear();
+                    command.Append("rcap ");
+                    forming_number_string.Clear();
+                    forming_number = -1;
+                }//elseif
+                else if (row_field[i] == '-')
+                {
+                    hyphen = true;
+                }
+
+            }//for
+            
+            port.Close();
+        }//buttonclick
+
+        private void fire_commands(string single_command, string row_field)
+        {
+            bool hyphen = false;
+            StringBuilder parameter = new StringBuilder();
+            StringBuilder command = new StringBuilder();
+            command.Append(single_command);
+            StringBuilder forming_number_string = new StringBuilder();
+            //string row_field = textBox8.Text + "\0";
+
+            int max_rows = 11;
+            int forming_number = -1;
+
+            SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+            port.Open();
+            port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+            for (int i = 0; i < row_field.Length; i++)
+            {
+                if (System.Char.IsDigit(row_field, i) == true && forming_number == -1)
+                {
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = (int)char.GetNumericValue(row_field[i]);
+                    label9.Text = "isdigit" + forming_number.ToString();
+                }//if
+                else if (System.Char.IsDigit(row_field, i) == true)
+                {
+
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = forming_number * 10 + (int)char.GetNumericValue(row_field[i]);
+                    label9.Text = "multi_digit" + forming_number.ToString();
+                }
+                else if (hyphen == false && (row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
+                {
+
+                    if (forming_number > max_rows || forming_number == -1)
+                    {
+                        continue;
+                    }
+
+                    parameter.Append(forming_number_string);
+                    command.Append(parameter).Append("\r");
+                    port.Write("gc " + parameter.ToString() + "\r");
+                    //port.Write(get_cap.ToString());
+                    label9.Text = command.ToString();
+                    port.Write(command.ToString());
+
+                    parameter.Clear();
+                    command.Clear();
+                    command.Append("rcap ");
+                    forming_number_string.Clear();
+                    forming_number = -1;
+                }//elseif
+                else if (row_field[i] == '-')
+                {
+                    hyphen = true;
+                }
+
+            }//for
+
+            port.Close();
+        }//fire_commands
+
+        private void textBox8_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
         }
 
     }
