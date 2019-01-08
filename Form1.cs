@@ -192,35 +192,35 @@ namespace Csharp_GUI
             SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
             port.Open();
             port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-            //port.Write("dcap 11\r");
-            //port.Write("pc 11 \r");
-            //port.Write("dcap 10\r");
-            //port.Write("pc 10 \r");
-            //port.Write("dcap 9\r");
-            //port.Write("pc 9 \r");
-            //port.Write("dcap 8\r");
-            //port.Write("pc 8 \r");
-            //port.Write("dcap 7\r");
-            //port.Write("pc 7 \r");
-            //port.Write("dcap 6\r");
-            //port.Write("pc 6 \r");
-            //port.Write("dcap 5\r");
-            //port.Write("pc 5 \r");
-            //port.Write("dcap 4\r");
-            //port.Write("pc 4 \r");
-            //port.Write("dcap 3\r");
-            //port.Write("pc 3 \r");
-            //port.Write("dcap 2\r");
-            //port.Write("pc 2 \r");
-            //port.Write("dcap 1\r");
-            //port.Write("pc 1 \r");
-            //port.Write("dcap 0\r");
-            //port.Write("pc 0 \r");
+            port.Write("dcap 11\r");
+            port.Write("pc 11 \r");
+            port.Write("dcap 10\r");
+            port.Write("pc 10 \r");
+            port.Write("dcap 9\r");
+            port.Write("pc 9 \r");
+            port.Write("dcap 8\r");
+            port.Write("pc 8 \r");
+            port.Write("dcap 7\r");
+            port.Write("pc 7 \r");
+            port.Write("dcap 6\r");
+            port.Write("pc 6 \r");
+            port.Write("dcap 5\r");
+            port.Write("pc 5 \r");
+            port.Write("dcap 4\r");
+            port.Write("pc 4 \r");
+            port.Write("dcap 3\r");
+            port.Write("pc 3 \r");
+            port.Write("dcap 2\r");
+            port.Write("pc 2 \r");
+            port.Write("dcap 1\r");
+            port.Write("pc 1 \r");
+            port.Write("dcap 0\r");
+            port.Write("pc 0 \r");
 
-            //port.Write("rcap 11\r");
-            //port.Write("pc 11 \r");
-            //port.Write("rcap 10\r");
-            //port.Write("pc 10 \r");
+            port.Write("rcap 11\r");
+            port.Write("pc 11 \r");
+            port.Write("rcap 10\r");
+            port.Write("pc 10 \r");
             port.Write("rcap 9\r");
             port.Write("gc 9 \r");
             port.Write("rcap 8\r");
@@ -260,80 +260,24 @@ namespace Csharp_GUI
 
         private void button14_Click(object sender, EventArgs e)
         {
-
+            string row_field = textBox8.Text + "\0";
+            fire_commands("dcap", row_field);
         }
 
         private void button17_Click(object sender, EventArgs e)
         {
-           
-            bool hyphen = false;
-            StringBuilder parameter = new StringBuilder();
-            StringBuilder command = new StringBuilder();
-            command.Append("rcap ");
-            StringBuilder forming_number_string = new StringBuilder();
             string row_field = textBox8.Text + "\0";
-
-            //fire_commands("rcap ", row_field);
-
-
-            int max_rows = 11;
-            int forming_number = -1;
-
-            SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
-            port.Open();
-            port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-            for (int i = 0; i < row_field.Length; i++)
-            {
-                if (System.Char.IsDigit(row_field, i) == true && forming_number == -1)
-                {
-                    forming_number_string.Append(row_field[i]);
-                    forming_number = (int)char.GetNumericValue(row_field[i]);
-                    label9.Text = "isdigit" + forming_number.ToString();
-                }//if
-                else if (System.Char.IsDigit(row_field, i) == true)
-                {
-                    
-                    forming_number_string.Append(row_field[i]);
-                    forming_number = forming_number * 10 + (int)char.GetNumericValue(row_field[i]);
-                    label9.Text = "multi_digit" + forming_number.ToString();
-                }
-                else if (hyphen == false && (row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
-                {
-                    
-                    if (forming_number > max_rows || forming_number == -1)
-                    {
-                        continue;
-                    }
-                    
-                    parameter.Append(forming_number_string);
-                    command.Append(parameter).Append("\r");
-                    port.Write("gc " + parameter.ToString() + "\r");
-                    //port.Write(get_cap.ToString());
-                    label9.Text = command.ToString();
-                    port.Write(command.ToString());
-
-                    parameter.Clear();
-                    command.Clear();
-                    command.Append("rcap ");
-                    forming_number_string.Clear();
-                    forming_number = -1;
-                }//elseif
-                else if (row_field[i] == '-')
-                {
-                    hyphen = true;
-                }
-
-            }//for
-            
-            port.Close();
+            fire_commands("rcap", row_field);
         }//buttonclick
 
         private void fire_commands(string single_command, string row_field)
         {
+            int end_number = -1;
+            StringBuilder end_string = new StringBuilder();
             bool hyphen = false;
             StringBuilder parameter = new StringBuilder();
             StringBuilder command = new StringBuilder();
-            command.Append(single_command);
+            command.Append(single_command).Append(" ");
             StringBuilder forming_number_string = new StringBuilder();
             //string row_field = textBox8.Text + "\0";
 
@@ -345,19 +289,30 @@ namespace Csharp_GUI
             port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
             for (int i = 0; i < row_field.Length; i++)
             {
-                if (System.Char.IsDigit(row_field, i) == true && forming_number == -1)
+                if (hyphen == false && System.Char.IsDigit(row_field, i) == true && forming_number == -1)
                 {
                     forming_number_string.Append(row_field[i]);
                     forming_number = (int)char.GetNumericValue(row_field[i]);
                     label9.Text = "isdigit" + forming_number.ToString();
                 }//if
-                else if (System.Char.IsDigit(row_field, i) == true)
+                else if (System.Char.IsDigit(row_field, i) == true && hyphen == true && end_number == -1)
                 {
-
+                    end_string.Append(row_field[i]);
+                    end_number = (int)char.GetNumericValue(row_field[i]);
+                }
+                else if (System.Char.IsDigit(row_field, i) == true && hyphen == true)
+                {
+                    end_string.Append(row_field[i]);
+                    end_number = end_number * 10 + (int)char.GetNumericValue(row_field[i]);
+                }
+                else if (System.Char.IsDigit(row_field, i) == true && hyphen == false)
+                {
                     forming_number_string.Append(row_field[i]);
                     forming_number = forming_number * 10 + (int)char.GetNumericValue(row_field[i]);
                     label9.Text = "multi_digit" + forming_number.ToString();
                 }
+
+                    //NO HYPHEN
                 else if (hyphen == false && (row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
                 {
 
@@ -368,17 +323,66 @@ namespace Csharp_GUI
 
                     parameter.Append(forming_number_string);
                     command.Append(parameter).Append("\r");
-                    port.Write("gc " + parameter.ToString() + "\r");
-                    //port.Write(get_cap.ToString());
+                    if(single_command == "rcap"){
+                      port.Write("gc " + parameter.ToString() + "\r");                    
+                      port.Write(command.ToString());
+                    }
+                    else if(single_command == "dcap"){
+                      port.Write(command.ToString());
+                      port.Write("pc " + parameter.ToString() + "\r"); 
+                    }
                     label9.Text = command.ToString();
-                    port.Write(command.ToString());
+                    parameter.Clear();
+                    command.Clear();
+                    command.Append(single_command).Append(" ");
+                    forming_number_string.Clear();
+                    forming_number = -1;
+                }//elseif NO HYPHEN
+
+                    //HYPHEN
+                else if (hyphen == true && (row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
+                {
+
+                    if (forming_number > max_rows || forming_number == -1)
+                    {
+                        continue;
+                    }
+
+                    for (int j = forming_number; j <= end_number; j++)
+                    {
+                        parameter.Append(forming_number_string);
+                        command.Append(parameter).Append("\r");
+                        if (single_command == "rcap")
+                        {
+                            port.Write("gc " + parameter.ToString() + "\r");
+                            port.Write(command.ToString());
+                        }
+                        else if (single_command == "dcap")
+                        {
+                            port.Write(command.ToString());
+                            port.Write("pc " + parameter.ToString() + "\r");
+                        }
+
+                        parameter.Clear();
+                        command.Clear();
+                        command.Append(single_command).Append(" ");
+                        forming_number_string.Clear();
+                        forming_number_string.Append((j+1).ToString());
+                    }
+
+
+
 
                     parameter.Clear();
                     command.Clear();
-                    command.Append("rcap ");
+                    command.Append(single_command).Append(" ");
                     forming_number_string.Clear();
                     forming_number = -1;
-                }//elseif
+                    end_number = -1;
+                    end_string.Clear();
+
+                    hyphen = false;
+                }//elseif HYPHEN
                 else if (row_field[i] == '-')
                 {
                     hyphen = true;
