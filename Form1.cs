@@ -22,16 +22,7 @@ namespace Csharp_GUI
         public Form1()
         {
             InitializeComponent();
-            Globals.FluidxPort = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
-            try
-            {
-                Globals.FluidxPort.Open();
-            }
-            catch (Exception) { }
-           // Globals.FluidxPort.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-            portWrite("kl \r");
-            portWrite("cm \r");
-
+            
         }
 
         private void ON_OFF_button_Click_1(object sender, EventArgs e)
@@ -83,7 +74,22 @@ namespace Csharp_GUI
         {
             string Com_Number = Com_Select.Text;
             connection_status = 1;
+
+            Globals.FluidxPort = new SerialPort("COM" + Com_Number, 9600, Parity.Odd, 8, StopBits.One);
+            try
+            {
+                Globals.FluidxPort.Open();
+            }
+            catch (Exception) { Application.Exit(); }
+            // Globals.FluidxPort.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+            portWrite("kl \r");
+            portWrite("cm \r");
+            portWrite("kl \r");
+            portWrite("PIN\r");
+
             portWrite( "cm\r");
+            button1.Visible = false;
+            button1.Enabled = false;
             //PortChat.Serial_Connection();
         }
 
@@ -157,63 +163,86 @@ namespace Csharp_GUI
 
         private void button13_Click(object sender, EventArgs e)
         {
-            //SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+            StartButtonThread(tsFillDemo1);
+        }
 
-            //port.Open();
-            //   System.Threading.Thread.Sleep(1000);
-            //port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-            
-            portWrite( "dcap 11\r");
-            portWrite( "PIN\r");
-            portWrite( "LHP 11\r");
-            portWrite( "PTS 2000 700 1\r");
-            portWrite( "rcap 11\r");
-
-            //port.Close();
+        public int tsFillDemo1()
+        {
+            for (int i = 0; i < Globals.demo_cycles; i++)
+            {
+                portWrite("dcap 7\r");
+                portWrite("PIN\r");
+                portWrite("LHP 7\r");
+                portWrite("PTS 2000 700 1\r");
+                portWrite("rcap 7\r");
+            }
+            portWrite("to \r");
+            closeThread();
+            return 0;
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-           // SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+            StartButtonThread(tsTrayDemo);
+        }
 
-           // port.Open();
-           // port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-
-            portWrite( "to \r");
-            System.Threading.Thread.Sleep(6350);
-            portWrite( "tc \r");
-
-            //port.Close();
+        public int tsTrayDemo()
+        {
+            for(int i = 0; i < Globals.demo_cycles; i++) {
+                portWrite("to \r");
+                System.Threading.Thread.Sleep(3000);
+                portWrite("tc \r");
+            }
+            closeThread();
+            return 0;
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            //SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
+            StartButtonThread(tsCapDemo2);
+        }
 
-           // port.Open();
-           // port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-
-            portWrite( "dcap 11\r");
-            portWrite( "pc 11 \r");
-            portWrite( "gc 11 \r");
-            portWrite( "rcap 11\r");
-
-           // port.Close();
+        public int tsCapDemo2()
+        {
+            for (int i = 0; i < Globals.demo_cycles; i++)
+            {
+                portWrite("dcap 7\r");
+                portWrite("pc 7 \r");
+                portWrite("gc 7 \r");
+                portWrite("rcap 7\r");
+            }
+            portWrite("to \r");
+            closeThread();
+            return 0;
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
-            fire_commands("dcap", "0-11\0", "", "", "");
-            fire_commands("rcap", "0-11\0", "", "", "");
+            StartButtonThread(tsCapDemo4);
+        }
+
+        public int tsCapDemo4()
+        {
+            for (int i = 0; i < Globals.demo_cycles; i++)
+            {
+                fire_commands("dcap", "0-11\0", "", "", "");
+                fire_commands("rcap", "0-11\0", "", "", "");
+            }
+            portWrite("to \r");
+            closeThread();
+            return 0;
         }
 
         private void bulkfill_Click(object sender, EventArgs e)
         {
-            //SerialPort port = new SerialPort("COM3", 9600, Parity.Odd, 8, StopBits.One);
-            //port.Open();
-           // port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-            portWrite("LHBF 1000 500\r");
-           // port.Close();
+            StartButtonThread(tsBulkFill);
+        }
+
+        public int tsBulkFill()
+        {
+            fire_commands("LHP", "0-7\0", textBox4.Text, textBox5.Text, " -1");
+            closeThread();
+            return 0;
         }
 
         private void tabPage4_Click(object sender, EventArgs e)
@@ -223,15 +252,62 @@ namespace Csharp_GUI
 
         private void button14_Click(object sender, EventArgs e)
         {
+            StartButtonThread(tsDecapRow);
+        }
+
+        public int tsDecapRow()
+        {
             string row_field = textBox8.Text + "\0";
-            fire_commands("dcap", row_field,"","", "");
+            fire_commands("dcap", row_field, "", "", "");
+            Globals.FluidxBusy = false;
+            closeThread();
+            return 0;
         }
 
         private void button17_Click(object sender, EventArgs e)
         {
-            string row_field = textBox8.Text + "\0";
-            fire_commands("rcap", row_field,"","", "");
+            StartButtonThread(tsCapRow);
         }//buttonclick
+
+        public int tsCapRow()
+        {
+            string row_field = textBox8.Text + "\0";
+            fire_commands("rcap", row_field, "", "", "");
+            Globals.FluidxBusy = false;
+            closeThread();
+            return 0;
+        }//17
+
+        public void closeThread()
+        {
+            tabControl1.Enabled = true;
+            Globals.Halt = false;
+        }
+
+        public bool LockFluidx()
+        {
+            if(Globals.FluidxBusy == false)
+            {
+                Globals.FluidxBusy = true;
+                return true;
+            }
+            return false;
+        }
+
+        public Thread StartButtonThread(Func<int> functionName)
+        {
+            tabControl1.Enabled = false;
+            var t = new Thread(() => functionName());
+            t.Start();
+            return t;
+        }
+
+
+        public int LockThread(Func<int>functionName)
+        {
+
+            return 0;
+        }
 
         private void fire_commands(string single_command, string row_field, string arg2, string arg3, string arg4)
         {
@@ -382,6 +458,8 @@ namespace Csharp_GUI
            // port.Close();
         }//fire_commands
 
+
+
         private void thread_safe_port_write(string message)
         {
             FluidxMutex.WaitOne();
@@ -401,21 +479,18 @@ namespace Csharp_GUI
 
         private void portWrite(string message)
         {
-          //  Thread t = new Thread(new ParameterizedThreadStart(thread_safe_port_write));
+            //Thread t = new Thread(new ParameterizedThreadStart(thread_safe_port_write));
 
-            FluidxMutex.WaitOne();
-            try
+            if (Globals.Halt == true)
             {
-                Globals.FluidxPort.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-                Globals.FluidxPort.ReadLine();
-                Globals.FluidxPort.Write(message);
-                progress_report.Text = "Processing: " + message;
-                status_report.Text = "Status report: " + Globals.FluidxPort.ReadLine();
+                return;
             }
-            finally
-            {
-                FluidxMutex.ReleaseMutex();
-            }
+            Globals.FluidxPort.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+            Globals.FluidxPort.ReadLine();
+            Globals.FluidxPort.Write(message);
+            progress_report.Text = "Processing: " + message;
+            status_report.Text = "Status report: " + Globals.FluidxPort.ReadLine();
+
         }
 
 
@@ -436,6 +511,11 @@ namespace Csharp_GUI
 
         private void button9_Click(object sender, EventArgs e)
         {
+            StartButtonThread(tsFillRow);
+        }
+
+        public int tsFillRow()
+        {
             string row_field = textBox3.Text + "\0";
             if (checkBox1.Text == "Checked")
             {
@@ -445,6 +525,8 @@ namespace Csharp_GUI
             {
                 fire_commands("LHP", row_field, textBox4.Text, textBox5.Text, " 1");
             }
+            closeThread();
+            return 0;
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
@@ -469,6 +551,158 @@ namespace Csharp_GUI
 
         }
 
+        private void Warning_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Stop_Button_Click(object sender, EventArgs e)
+        {
+            Globals.Halt = true;
+        }
+
+        private void button23_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsCapDemo1);
+        }
+
+        public int tsCapDemo1()
+        {
+            for (int i = 0; i < Globals.demo_cycles; i++)
+            {
+                portWrite("dcap 7\r");
+                portWrite("rcap 7\r");
+            }
+            portWrite("to \r");
+            closeThread();
+            return 0;
+        }
+
+        private void button24_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsFillDemo2);
+        }
+
+        public int tsFillDemo2()
+        {
+            for (int i = 0; i < Globals.demo_cycles; i++)
+            {
+                portWrite("dcap 7\r");
+                portWrite("pc 7 \r");
+                portWrite("PIN\r");
+                portWrite("LHP 7\r");
+                portWrite("PTS 2000 700 1\r");
+                portWrite("gc 7 \r");
+                portWrite("rcap 7\r");
+            }
+            portWrite("to \r");
+            closeThread();
+            return 0;
+        }
+
+        private void button25_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsCapDemo3);
+        }
+
+        public int tsCapDemo3()
+        {
+            for (int i = 0; i < Globals.demo_cycles; i++)
+            {
+                portWrite("dcap 0\r");
+                portWrite("pc 0 \r");
+                portWrite("gc 0 \r");
+                portWrite("rcap 0\r");
+            }
+            portWrite("to \r");
+            closeThread();
+            return 0;
+        }
+
+        private void button27_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsFillDemo4);
+        }
+
+        public int tsFillDemo4()
+        {
+            for (int k = 0; k < Globals.demo_cycles; k++)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+
+                    portWrite("dcap " + i.ToString() + "\r");
+                    portWrite("LHP " + i.ToString() + "\r");
+                    portWrite("PTS 2000 700 1\r");
+                    portWrite("rcap " + i.ToString() + "\r");
+                }
+            }
+            portWrite("to \r");
+            //fire_commands("LHP", "0-7\0", textBox4.Text, textBox5.Text, " -1");
+            closeThread();
+            return 0;
+        }
+
+        private void button26_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsFillDemo3);
+        }
+
+        public int tsFillDemo3()
+        {
+            for (int i = 0; i < Globals.demo_cycles; i++)
+            {
+                portWrite("dcap 0\r");
+                portWrite("PIN\r");
+                portWrite("LHP 0\r");
+                portWrite("PTS 2000 700 1\r");
+                portWrite("rcap 0\r");
+            }
+            portWrite("to \r");
+            closeThread();
+            return 0;
+        }
+
+        private void button28_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsFillDemo5);
+        }
+
+        public int tsFillDemo5()
+        {
+            for (int i = 0; i < Globals.demo_cycles; i++)
+            {
+                fire_commands("LHP", "0-7\0", " 2000 " , "500 ", " -1");
+            }
+            portWrite("to \r");
+            closeThread();
+            return 0;
+        }
+
+        private void tabPage3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Five_Cycles_CheckedChanged(object sender, EventArgs e)
+        {
+            Globals.demo_cycles = 5;
+        }
+
+        private void One_Cycle_CheckedChanged(object sender, EventArgs e)
+        {
+            Globals.demo_cycles = 1;
+        }
+
+        private void tencycles_CheckedChanged(object sender, EventArgs e)
+        {
+            Globals.demo_cycles = 10;
+        }
+
+        private void fifty_cycles_CheckedChanged(object sender, EventArgs e)
+        {
+            Globals.demo_cycles = 50;
+        }
         //private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         //{
         //    var port = (SerialPort)sender;
@@ -491,7 +725,12 @@ namespace Csharp_GUI
 
     public class Globals
     {
+        public static bool Halt = false;
+        public static bool FluidxBusy = false;
         public static SerialPort FluidxPort;
-        public static bool DeviceBusy = false;
+        public static readonly object FluidxLock;
+        public static int demo_cycles = 1;
+        //public static bool DeviceBusy = false;
     }
+
 }
