@@ -101,6 +101,14 @@ namespace Csharp_GUI
             tabControl1.Visible = true;
             Stop_Button.Enabled = true;
             Stop_Button.Visible = true;
+            button30.Enabled = true;
+            button30.Visible = true;
+            button31.Enabled = true;
+            button31.Visible = true;
+            button32.Enabled = true;
+            button32.Visible = true;
+            panel5.Visible = true;
+            panel5.Enabled = true;
             
             //PortChat.Serial_Connection();
         }
@@ -292,8 +300,9 @@ namespace Csharp_GUI
 
         public void closeThread()
         {
-            progress_report.Text = "Processing: idle";
+            progress_report.Text = "Processing:";
             tabControl1.Enabled = true;
+            panel5.Enabled = true;
             Globals.Halt = false;
         }
 
@@ -310,6 +319,7 @@ namespace Csharp_GUI
         public Thread StartButtonThread(Func<int> functionName)
         {
             tabControl1.Enabled = false;
+            panel5.Enabled = false;
             var t = new Thread(() => functionName());
             t.Start();
             return t;
@@ -571,8 +581,11 @@ namespace Csharp_GUI
 
         private void Stop_Button_Click(object sender, EventArgs e)
         {
-            Globals.Halt = true;
-            progress_report.Text = "Processing: idle";
+            if (tabControl1.Enabled == false)
+            {
+                Globals.Halt = true;
+                progress_report.Text = "Processing:";
+            }
         }
 
         private void button23_Click(object sender, EventArgs e)
@@ -778,6 +791,47 @@ namespace Csharp_GUI
         }
 
         private void button30_Click(object sender, EventArgs e)
+        {
+            Globals.cycleHalt = true;
+        }
+
+        private void button31_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsTrayOut);
+        }
+
+        public int tsTrayOut()
+        {
+            portWrite("to \r");
+            closeThread();
+            return 0;
+        }
+
+        private void button32_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsTrayIn);
+        }
+
+        public int tsTrayIn()
+        {
+            portWrite("tc \r");
+            closeThread();
+            return 0;
+        }
+
+        private void button33_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsCM);
+        }
+
+        public int tsCM()
+        {
+            portWrite("cm \r");
+            closeThread();
+            return 0;
+        }
+
+        private void button31_Click_1(object sender, EventArgs e)
         {
 
         }

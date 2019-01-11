@@ -111,7 +111,6 @@ namespace Csharp_GUI
             this.One_Cycle = new System.Windows.Forms.RadioButton();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.label13 = new System.Windows.Forms.Label();
-            this.button29 = new System.Windows.Forms.Button();
             this.Warning = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
@@ -145,6 +144,11 @@ namespace Csharp_GUI
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.button30 = new System.Windows.Forms.Button();
+            this.button29 = new System.Windows.Forms.Button();
+            this.button32 = new System.Windows.Forms.Button();
+            this.button31 = new System.Windows.Forms.Button();
+            this.button33 = new System.Windows.Forms.Button();
+            this.panel5 = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -160,6 +164,7 @@ namespace Csharp_GUI
             this.groupBox5.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -176,7 +181,7 @@ namespace Csharp_GUI
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(746, 642);
+            this.tabControl1.Size = new System.Drawing.Size(746, 640);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.Visible = false;
             // 
@@ -192,7 +197,7 @@ namespace Csharp_GUI
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(738, 616);
+            this.tabPage1.Size = new System.Drawing.Size(738, 614);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Pump Controls";
             // 
@@ -238,7 +243,7 @@ namespace Csharp_GUI
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(56, 23);
             this.button19.TabIndex = 3;
-            this.button19.Text = "20mm";
+            this.button19.Text = "2.79mm";
             this.button19.UseVisualStyleBackColor = true;
             this.button19.Click += new System.EventHandler(this.button19_Click);
             // 
@@ -248,7 +253,7 @@ namespace Csharp_GUI
             this.button20.Name = "button20";
             this.button20.Size = new System.Drawing.Size(56, 23);
             this.button20.TabIndex = 0;
-            this.button20.Text = "5mm";
+            this.button20.Text = "1.02mm";
             this.button20.UseVisualStyleBackColor = true;
             this.button20.Click += new System.EventHandler(this.button20_Click);
             // 
@@ -258,7 +263,7 @@ namespace Csharp_GUI
             this.button21.Name = "button21";
             this.button21.Size = new System.Drawing.Size(56, 23);
             this.button21.TabIndex = 1;
-            this.button21.Text = "15mm";
+            this.button21.Text = "2.06mm";
             this.button21.UseVisualStyleBackColor = true;
             this.button21.Click += new System.EventHandler(this.button21_Click);
             // 
@@ -268,7 +273,7 @@ namespace Csharp_GUI
             this.button22.Name = "button22";
             this.button22.Size = new System.Drawing.Size(56, 23);
             this.button22.TabIndex = 2;
-            this.button22.Text = "10mm";
+            this.button22.Text = "1.42mm";
             this.button22.UseVisualStyleBackColor = true;
             this.button22.Click += new System.EventHandler(this.button22_Click);
             // 
@@ -390,7 +395,7 @@ namespace Csharp_GUI
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(738, 616);
+            this.tabPage2.Size = new System.Drawing.Size(738, 614);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Fill Commands";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -677,7 +682,7 @@ namespace Csharp_GUI
             this.tabPage3.Controls.Add(this.One_Cycle);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(738, 616);
+            this.tabPage3.Size = new System.Drawing.Size(738, 614);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "    Demo     ";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -944,13 +949,12 @@ namespace Csharp_GUI
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.label13);
-            this.tabPage4.Controls.Add(this.button29);
             this.tabPage4.Controls.Add(this.Warning);
             this.tabPage4.Controls.Add(this.groupBox3);
             this.tabPage4.Controls.Add(this.groupBox4);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(738, 616);
+            this.tabPage4.Size = new System.Drawing.Size(738, 614);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Capping Commands";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -964,16 +968,6 @@ namespace Csharp_GUI
             this.label13.Size = new System.Drawing.Size(134, 26);
             this.label13.TabIndex = 11;
             this.label13.Text = "*You can use commas and\r\n hyphens to chain rows.";
-            // 
-            // button29
-            // 
-            this.button29.Location = new System.Drawing.Point(45, 287);
-            this.button29.Name = "button29";
-            this.button29.Size = new System.Drawing.Size(75, 23);
-            this.button29.TabIndex = 10;
-            this.button29.Text = "Strip";
-            this.button29.UseVisualStyleBackColor = true;
-            this.button29.Click += new System.EventHandler(this.button29_Click);
             // 
             // Warning
             // 
@@ -1129,7 +1123,7 @@ namespace Csharp_GUI
             this.tabPage5.Controls.Add(this.groupBox5);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(738, 616);
+            this.tabPage5.Size = new System.Drawing.Size(738, 614);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Tool Info Page";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -1236,6 +1230,7 @@ namespace Csharp_GUI
             // 
             // Com_Select
             // 
+            this.Com_Select.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Com_Select.Location = new System.Drawing.Point(442, 660);
             this.Com_Select.Name = "Com_Select";
             this.Com_Select.Size = new System.Drawing.Size(56, 20);
@@ -1244,6 +1239,7 @@ namespace Csharp_GUI
             // 
             // Com_selection
             // 
+            this.Com_selection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Com_selection.AutoSize = true;
             this.Com_selection.Location = new System.Drawing.Point(402, 663);
             this.Com_selection.Name = "Com_selection";
@@ -1253,6 +1249,7 @@ namespace Csharp_GUI
             // 
             // button1
             // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button1.Location = new System.Drawing.Point(401, 684);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(339, 23);
@@ -1286,7 +1283,7 @@ namespace Csharp_GUI
             // 
             this.Stop_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Stop_Button.Enabled = false;
-            this.Stop_Button.Location = new System.Drawing.Point(22, 660);
+            this.Stop_Button.Location = new System.Drawing.Point(22, 676);
             this.Stop_Button.Name = "Stop_Button";
             this.Stop_Button.Size = new System.Drawing.Size(75, 44);
             this.Stop_Button.TabIndex = 3;
@@ -1297,11 +1294,12 @@ namespace Csharp_GUI
             // 
             // panel3
             // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panel3.BackColor = System.Drawing.Color.White;
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel3.Controls.Add(this.status_report);
             this.panel3.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.panel3.Location = new System.Drawing.Point(233, 660);
+            this.panel3.Location = new System.Drawing.Point(202, 676);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(219, 20);
             this.panel3.TabIndex = 25;
@@ -1309,11 +1307,12 @@ namespace Csharp_GUI
             // 
             // panel4
             // 
+            this.panel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panel4.BackColor = System.Drawing.Color.White;
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel4.Controls.Add(this.progress_report);
             this.panel4.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.panel4.Location = new System.Drawing.Point(233, 687);
+            this.panel4.Location = new System.Drawing.Point(202, 703);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(219, 20);
             this.panel4.TabIndex = 26;
@@ -1323,7 +1322,7 @@ namespace Csharp_GUI
             // 
             this.button30.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button30.Enabled = false;
-            this.button30.Location = new System.Drawing.Point(109, 660);
+            this.button30.Location = new System.Drawing.Point(109, 676);
             this.button30.Name = "button30";
             this.button30.Size = new System.Drawing.Size(75, 44);
             this.button30.TabIndex = 27;
@@ -1332,11 +1331,72 @@ namespace Csharp_GUI
             this.button30.Visible = false;
             this.button30.Click += new System.EventHandler(this.button30_Click);
             // 
+            // button29
+            // 
+            this.button29.Location = new System.Drawing.Point(78, 3);
+            this.button29.Name = "button29";
+            this.button29.Size = new System.Drawing.Size(75, 23);
+            this.button29.TabIndex = 10;
+            this.button29.Text = "Strip";
+            this.button29.UseVisualStyleBackColor = true;
+            this.button29.Click += new System.EventHandler(this.button29_Click);
+            // 
+            // button32
+            // 
+            this.button32.Enabled = false;
+            this.button32.Location = new System.Drawing.Point(78, 27);
+            this.button32.Name = "button32";
+            this.button32.Size = new System.Drawing.Size(75, 23);
+            this.button32.TabIndex = 13;
+            this.button32.Text = "Tray In";
+            this.button32.UseVisualStyleBackColor = true;
+            this.button32.Visible = false;
+            this.button32.Click += new System.EventHandler(this.button32_Click);
+            // 
+            // button31
+            // 
+            this.button31.Enabled = false;
+            this.button31.Location = new System.Drawing.Point(2, 27);
+            this.button31.Name = "button31";
+            this.button31.Size = new System.Drawing.Size(75, 23);
+            this.button31.TabIndex = 12;
+            this.button31.Text = "Tray Out";
+            this.button31.UseVisualStyleBackColor = true;
+            this.button31.Visible = false;
+            this.button31.Click += new System.EventHandler(this.button31_Click);
+            // 
+            // button33
+            // 
+            this.button33.Location = new System.Drawing.Point(2, 3);
+            this.button33.Name = "button33";
+            this.button33.Size = new System.Drawing.Size(75, 23);
+            this.button33.TabIndex = 16;
+            this.button33.Text = "CM";
+            this.button33.UseVisualStyleBackColor = true;
+            this.button33.Click += new System.EventHandler(this.button33_Click);
+            // 
+            // panel5
+            // 
+            this.panel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel5.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel5.Controls.Add(this.button33);
+            this.panel5.Controls.Add(this.button31);
+            this.panel5.Controls.Add(this.button32);
+            this.panel5.Controls.Add(this.button29);
+            this.panel5.Enabled = false;
+            this.panel5.Location = new System.Drawing.Point(434, 672);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(157, 54);
+            this.panel5.TabIndex = 15;
+            this.panel5.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(764, 716);
+            this.ClientSize = new System.Drawing.Size(764, 732);
+            this.Controls.Add(this.panel5);
             this.Controls.Add(this.button30);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
@@ -1375,6 +1435,7 @@ namespace Csharp_GUI
             this.panel3.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.panel5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1451,7 +1512,6 @@ namespace Csharp_GUI
         private RadioButton fifty_cycles;
         private Button Stop_Button;
         private Label label11;
-        private Button button29;
         private Label label14;
         private Label label15;
         private Label label16;
@@ -1488,6 +1548,11 @@ namespace Csharp_GUI
         private Label label34;
         private GroupBox groupBox5;
         private Button button30;
+        private Button button29;
+        private Button button32;
+        private Button button31;
+        private Button button33;
+        private Panel panel5;
 
     }
 
