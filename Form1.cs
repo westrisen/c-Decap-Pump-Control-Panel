@@ -72,6 +72,14 @@ namespace Csharp_GUI
 
         private void Connect_to_Machine_Click_1(object sender, EventArgs e)
         {
+            Com_selection.Enabled = false;
+            Com_selection.Visible = false;
+            Com_Select.Enabled = false;
+            Com_Select.Visible = false;
+            button1.Visible = false;
+            button1.Enabled = false;
+            panel3.Visible = true;
+            panel4.Visible = true;
             string Com_Number = Com_Select.Text;
             connection_status = 1;
 
@@ -81,15 +89,19 @@ namespace Csharp_GUI
                 Globals.FluidxPort.Open();
             }
             catch (Exception) { Application.Exit(); }
+            
             // Globals.FluidxPort.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
             portWrite("kl \r");
             portWrite("cm \r");
             portWrite("kl \r");
             portWrite("PIN\r");
-
-            portWrite( "cm\r");
-            button1.Visible = false;
-            button1.Enabled = false;
+            
+            
+            tabControl1.Enabled = true;
+            tabControl1.Visible = true;
+            Stop_Button.Enabled = true;
+            Stop_Button.Visible = true;
+            
             //PortChat.Serial_Connection();
         }
 
@@ -225,8 +237,8 @@ namespace Csharp_GUI
         {
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
-                fire_commands("dcap", "0-11\0", "", "", "");
-                fire_commands("rcap", "0-11\0", "", "", "");
+                fire_commands("dcap", "0-7\0", "", "", "");
+                fire_commands("rcap", "0-7\0", "", "", "");
             }
             portWrite("to \r");
             closeThread();
@@ -280,6 +292,7 @@ namespace Csharp_GUI
 
         public void closeThread()
         {
+            progress_report.Text = "Processing: idle";
             tabControl1.Enabled = true;
             Globals.Halt = false;
         }
@@ -354,7 +367,7 @@ namespace Csharp_GUI
                 }
 
                     //NO HYPHEN
-                else if (hyphen == false && (row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
+                else if (hyphen == false && (row_field[i] == '.' || row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
                 {
                     
                     if (forming_number > max_rows || forming_number == -1)
@@ -390,7 +403,7 @@ namespace Csharp_GUI
                 }//elseif NO HYPHEN
 
                     //HYPHEN
-                else if (hyphen == true && (row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
+                else if (hyphen == true && (row_field[i] == '.' || row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
                 {
 
                     if (forming_number > max_rows || forming_number == -1)
@@ -559,6 +572,7 @@ namespace Csharp_GUI
         private void Stop_Button_Click(object sender, EventArgs e)
         {
             Globals.Halt = true;
+            progress_report.Text = "Processing: idle";
         }
 
         private void button23_Click(object sender, EventArgs e)
@@ -571,6 +585,7 @@ namespace Csharp_GUI
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
                 portWrite("dcap 7\r");
+                portWrite("to \r");
                 portWrite("rcap 7\r");
             }
             portWrite("to \r");
@@ -703,6 +718,69 @@ namespace Csharp_GUI
         {
             Globals.demo_cycles = 50;
         }
+
+        private void button20_Click(object sender, EventArgs e)
+        {
+            label10.Text = button20.Text;
+        }
+
+        private void button22_Click(object sender, EventArgs e)
+        {
+            label10.Text = button22.Text;
+        }
+
+        private void button21_Click(object sender, EventArgs e)
+        {
+            label10.Text = button21.Text;
+        }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+            label10.Text = button19.Text;
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button29_Click(object sender, EventArgs e)
+        {
+            StartButtonThread(tsStrip);
+        }
+
+        public int tsStrip()
+        {
+            portWrite("to \r");
+            portWrite("stp \r");
+            closeThread();
+            return 0;
+        }
+
+        private void Com_Select_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button23_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label27_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label30_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button30_Click(object sender, EventArgs e)
+        {
+
+        }
         //private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         //{
         //    var port = (SerialPort)sender;
@@ -730,6 +808,7 @@ namespace Csharp_GUI
         public static SerialPort FluidxPort;
         public static readonly object FluidxLock;
         public static int demo_cycles = 1;
+        public static bool cycleHalt = false;
         //public static bool DeviceBusy = false;
     }
 
