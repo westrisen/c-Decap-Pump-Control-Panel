@@ -149,6 +149,10 @@ namespace Csharp_GUI
             this.button31 = new System.Windows.Forms.Button();
             this.button33 = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.label35 = new System.Windows.Forms.Label();
+            this.radioButton9 = new System.Windows.Forms.RadioButton();
+            this.radioButton10 = new System.Windows.Forms.RadioButton();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -165,6 +169,7 @@ namespace Csharp_GUI
             this.panel3.SuspendLayout();
             this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -989,7 +994,7 @@ namespace Csharp_GUI
             this.groupBox3.Controls.Add(this.label12);
             this.groupBox3.Controls.Add(this.textBox8);
             this.groupBox3.Controls.Add(this.button14);
-            this.groupBox3.Location = new System.Drawing.Point(33, 140);
+            this.groupBox3.Location = new System.Drawing.Point(6, 109);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(306, 132);
             this.groupBox3.TabIndex = 8;
@@ -1071,7 +1076,7 @@ namespace Csharp_GUI
             this.groupBox4.Controls.Add(this.radioButton7);
             this.groupBox4.Controls.Add(this.radioButton8);
             this.groupBox4.Controls.Add(this.button15);
-            this.groupBox4.Location = new System.Drawing.Point(33, 37);
+            this.groupBox4.Location = new System.Drawing.Point(6, 6);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(306, 97);
             this.groupBox4.TabIndex = 7;
@@ -1326,7 +1331,7 @@ namespace Csharp_GUI
             this.button30.Name = "button30";
             this.button30.Size = new System.Drawing.Size(75, 44);
             this.button30.TabIndex = 27;
-            this.button30.Text = "Stop After Cycle";
+            this.button30.Text = "Stop Demo After Cycle";
             this.button30.UseVisualStyleBackColor = true;
             this.button30.Visible = false;
             this.button30.Click += new System.EventHandler(this.button30_Click);
@@ -1391,11 +1396,57 @@ namespace Csharp_GUI
             this.panel5.TabIndex = 15;
             this.panel5.Visible = false;
             // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(598, 706);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(40, 13);
+            this.label35.TabIndex = 28;
+            this.label35.Text = "           ";
+            // 
+            // radioButton9
+            // 
+            this.radioButton9.AutoSize = true;
+            this.radioButton9.Location = new System.Drawing.Point(6, 42);
+            this.radioButton9.Name = "radioButton9";
+            this.radioButton9.Size = new System.Drawing.Size(60, 17);
+            this.radioButton9.TabIndex = 12;
+            this.radioButton9.TabStop = true;
+            this.radioButton9.Text = "Vertical";
+            this.radioButton9.UseVisualStyleBackColor = true;
+            // 
+            // radioButton10
+            // 
+            this.radioButton10.AutoSize = true;
+            this.radioButton10.Location = new System.Drawing.Point(6, 19);
+            this.radioButton10.Name = "radioButton10";
+            this.radioButton10.Size = new System.Drawing.Size(72, 17);
+            this.radioButton10.TabIndex = 11;
+            this.radioButton10.TabStop = true;
+            this.radioButton10.Text = "Horizontal";
+            this.radioButton10.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.radioButton9);
+            this.groupBox6.Controls.Add(this.radioButton10);
+            this.groupBox6.Enabled = false;
+            this.groupBox6.Location = new System.Drawing.Point(597, 660);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(110, 66);
+            this.groupBox6.TabIndex = 13;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Rack Orientation";
+            this.groupBox6.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(764, 732);
+            this.Controls.Add(this.groupBox6);
+            this.Controls.Add(this.label35);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.button30);
             this.Controls.Add(this.panel4);
@@ -1436,6 +1487,8 @@ namespace Csharp_GUI
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.panel5.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1553,6 +1606,10 @@ namespace Csharp_GUI
         private Button button31;
         private Button button33;
         private Panel panel5;
+        private Label label35;
+        private RadioButton radioButton9;
+        private RadioButton radioButton10;
+        private GroupBox groupBox6;
 
     }
 

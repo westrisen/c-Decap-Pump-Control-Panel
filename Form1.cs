@@ -95,8 +95,8 @@ namespace Csharp_GUI
             portWrite("cm \r");
             portWrite("kl \r");
             portWrite("PIN\r");
-            
-            
+
+            One_Cycle.Checked = true;
             tabControl1.Enabled = true;
             tabControl1.Visible = true;
             Stop_Button.Enabled = true;
@@ -109,26 +109,16 @@ namespace Csharp_GUI
             button32.Visible = true;
             panel5.Visible = true;
             panel5.Enabled = true;
-            
+            groupBox6.Visible = true;
+            groupBox6.Enabled = true;
+            progress_report.Text = "Processing:";
             //PortChat.Serial_Connection();
         }
 
 
         private void SendTest()
         {
-            // Instantiate the communications
-            // port with some basic settings
-           // SerialPort port = new SerialPort(
-            //  "COM3", 9600, Parity.Odd, 8, StopBits.One);
 
-            // Open the port for communications
-          //  port.Open();
-
-            // Write a string
-         //   System.Threading.Thread.Sleep(1000);
-          //  port.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
-            
-           // port.Close();
         }
 
 
@@ -190,11 +180,18 @@ namespace Csharp_GUI
         {
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
+                int j = i + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 portWrite("dcap 7\r");
                 portWrite("PIN\r");
                 portWrite("LHP 7\r");
                 portWrite("PTS 2000 700 1\r");
                 portWrite("rcap 7\r");
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
+                }
             }
             portWrite("to \r");
             closeThread();
@@ -209,9 +206,19 @@ namespace Csharp_GUI
         public int tsTrayDemo()
         {
             for(int i = 0; i < Globals.demo_cycles; i++) {
+                int j = i + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 portWrite("to \r");
-                System.Threading.Thread.Sleep(3000);
+                if (Globals.cycleHalt == false && Globals.Halt == false)
+                {
+                    System.Threading.Thread.Sleep(3000);
+                }
                 portWrite("tc \r");
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
+                }                
             }
             closeThread();
             return 0;
@@ -226,10 +233,17 @@ namespace Csharp_GUI
         {
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
+                int j = i + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 portWrite("dcap 7\r");
                 portWrite("pc 7 \r");
                 portWrite("gc 7 \r");
                 portWrite("rcap 7\r");
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
+                }
             }
             portWrite("to \r");
             closeThread();
@@ -245,8 +259,15 @@ namespace Csharp_GUI
         {
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
+                int j = i + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 fire_commands("dcap", "0-7\0", "", "", "");
                 fire_commands("rcap", "0-7\0", "", "", "");
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
+                }
             }
             portWrite("to \r");
             closeThread();
@@ -300,10 +321,12 @@ namespace Csharp_GUI
 
         public void closeThread()
         {
+            label35.Text = "";
             progress_report.Text = "Processing:";
             tabControl1.Enabled = true;
             panel5.Enabled = true;
             Globals.Halt = false;
+            Globals.cycleHalt = false;
         }
 
         public bool LockFluidx()
@@ -597,14 +620,23 @@ namespace Csharp_GUI
         {
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
+                int j = i + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 portWrite("dcap 7\r");
                 portWrite("to \r");
                 portWrite("rcap 7\r");
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
+                }
             }
             portWrite("to \r");
             closeThread();
             return 0;
         }
+
+
 
         private void button24_Click(object sender, EventArgs e)
         {
@@ -615,6 +647,8 @@ namespace Csharp_GUI
         {
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
+                int j = i + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 portWrite("dcap 7\r");
                 portWrite("pc 7 \r");
                 portWrite("PIN\r");
@@ -622,6 +656,11 @@ namespace Csharp_GUI
                 portWrite("PTS 2000 700 1\r");
                 portWrite("gc 7 \r");
                 portWrite("rcap 7\r");
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
+                }
             }
             portWrite("to \r");
             closeThread();
@@ -637,10 +676,17 @@ namespace Csharp_GUI
         {
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
+                int j = i + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 portWrite("dcap 0\r");
                 portWrite("pc 0 \r");
                 portWrite("gc 0 \r");
                 portWrite("rcap 0\r");
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
+                }
             }
             portWrite("to \r");
             closeThread();
@@ -656,6 +702,8 @@ namespace Csharp_GUI
         {
             for (int k = 0; k < Globals.demo_cycles; k++)
             {
+                int j = k + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 for (int i = 0; i < 8; i++)
                 {
 
@@ -663,6 +711,11 @@ namespace Csharp_GUI
                     portWrite("LHP " + i.ToString() + "\r");
                     portWrite("PTS 2000 700 1\r");
                     portWrite("rcap " + i.ToString() + "\r");
+                }
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
                 }
             }
             portWrite("to \r");
@@ -680,11 +733,18 @@ namespace Csharp_GUI
         {
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
+                int j = i + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 portWrite("dcap 0\r");
                 portWrite("PIN\r");
                 portWrite("LHP 0\r");
                 portWrite("PTS 2000 700 1\r");
                 portWrite("rcap 0\r");
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
+                }
             }
             portWrite("to \r");
             closeThread();
@@ -700,7 +760,14 @@ namespace Csharp_GUI
         {
             for (int i = 0; i < Globals.demo_cycles; i++)
             {
+                int j = i + 1;
+                label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
                 fire_commands("LHP", "0-7\0", " 2000 " , "500 ", " -1");
+                if (Globals.cycleHalt == true)
+                {
+                    closeThread();
+                    return 0;
+                }
             }
             portWrite("to \r");
             closeThread();
@@ -857,11 +924,19 @@ namespace Csharp_GUI
 
     public class Globals
     {
+        public static int Max_int = 7;
+        public static string Max_string = "7";
+        public static int hMax_int = 7;
+        public static string hMax_string = "7";
+        public static int vMax_int = 11;
+        public static string vMax_string = "11";
+        public static bool trayVert = false;
         public static bool Halt = false;
         public static bool FluidxBusy = false;
         public static SerialPort FluidxPort;
         public static readonly object FluidxLock;
         public static int demo_cycles = 1;
+        public static int cap_cycles = 1;
         public static bool cycleHalt = false;
         //public static bool DeviceBusy = false;
     }
