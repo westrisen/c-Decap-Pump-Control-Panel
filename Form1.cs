@@ -89,13 +89,21 @@ namespace Csharp_GUI
                 Globals.FluidxPort.Open();
             }
             catch (Exception) { Application.Exit(); }
-            
+
             // Globals.FluidxPort.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
             portWrite("kl \r");
             portWrite("cm \r");
             portWrite("kl \r");
             portWrite("PIN\r");
+            portWrite("seto 0 \r");
 
+//foreach(Panel
+            Globals.hrows = new List<Panel> { panel14, panel16, panel17, panel18, panel10, panel11, panel12, panel13, panel8, panel9, panel7, panel15, };
+            Globals.vrows = new List<Panel> {panel23, panel24, panel25, panel26, panel21, panel22, panel26, panel19 };
+            Globals.currently_active = new List<Panel> { };
+            
+            
+            radioButton10.Checked = true;
             One_Cycle.Checked = true;
             tabControl1.Enabled = true;
             tabControl1.Visible = true;
@@ -112,6 +120,11 @@ namespace Csharp_GUI
             groupBox6.Visible = true;
             groupBox6.Enabled = true;
             progress_report.Text = "Processing:";
+            panel27.Enabled = true;
+            panel27.Visible = true;
+            panel6.Visible = false;
+            panel6.Enabled = false;
+
             //PortChat.Serial_Connection();
         }
 
@@ -182,11 +195,11 @@ namespace Csharp_GUI
             {
                 int j = i + 1;
                 label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
-                portWrite("dcap 7\r");
+                portWrite("dcap " + Globals.Max_string + "\r");
                 portWrite("PIN\r");
-                portWrite("LHP 7\r");
+                portWrite("LHP " + Globals.Max_string + "\r");
                 portWrite("PTS 2000 700 1\r");
-                portWrite("rcap 7\r");
+                portWrite("rcap " + Globals.Max_string + "\r");
                 if (Globals.cycleHalt == true)
                 {
                     closeThread();
@@ -235,10 +248,10 @@ namespace Csharp_GUI
             {
                 int j = i + 1;
                 label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
-                portWrite("dcap 7\r");
-                portWrite("pc 7 \r");
-                portWrite("gc 7 \r");
-                portWrite("rcap 7\r");
+                portWrite("dcap " + Globals.Max_string + "\r");
+                portWrite("pc " + Globals.Max_string + " \r");
+                portWrite("gc " + Globals.Max_string + " \r");
+                portWrite("rcap " + Globals.Max_string + "\r");
                 if (Globals.cycleHalt == true)
                 {
                     closeThread();
@@ -261,8 +274,8 @@ namespace Csharp_GUI
             {
                 int j = i + 1;
                 label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
-                fire_commands("dcap", "0-7\0", "", "", "");
-                fire_commands("rcap", "0-7\0", "", "", "");
+                fire_commands("dcap", "0-" + Globals.Max_string + "\0", "", "", "");
+                fire_commands("rcap", "0-" + Globals.Max_string + "\0", "", "", "");
                 if (Globals.cycleHalt == true)
                 {
                     closeThread();
@@ -281,7 +294,7 @@ namespace Csharp_GUI
 
         public int tsBulkFill()
         {
-            fire_commands("LHP", "0-7\0", textBox4.Text, textBox5.Text, " -1");
+            fire_commands("LHP", "0-" + Globals.Max_string + "\0", textBox2.Text, textBox1.Text, " -1");
             closeThread();
             return 0;
         }
@@ -323,6 +336,7 @@ namespace Csharp_GUI
         {
             label35.Text = "";
             progress_report.Text = "Processing:";
+            groupBox6.Enabled = true;
             tabControl1.Enabled = true;
             panel5.Enabled = true;
             Globals.Halt = false;
@@ -342,6 +356,7 @@ namespace Csharp_GUI
         public Thread StartButtonThread(Func<int> functionName)
         {
             tabControl1.Enabled = false;
+            groupBox6.Enabled = false;
             panel5.Enabled = false;
             var t = new Thread(() => functionName());
             t.Start();
@@ -504,7 +519,137 @@ namespace Csharp_GUI
            // port.Close();
         }//fire_commands
 
+        public void row_field_parser(string single_command, string row_field, string arg2, string arg3, string arg4)
+        {
+            StringBuilder return_code = new StringBuilder();
+            int end_number = -1;
+            StringBuilder end_string = new StringBuilder();
+            bool hyphen = false;
+            StringBuilder parameter = new StringBuilder();
+            StringBuilder command = new StringBuilder();
+            command.Append(single_command).Append(" ");
+            StringBuilder forming_number_string = new StringBuilder();
+            //string row_field = textBox8.Text + "\0";
 
+            int max_rows = 11;
+            int forming_number = -1;
+
+            for (int i = 0; i < row_field.Length; i++)
+            {
+                if (hyphen == false && System.Char.IsDigit(row_field, i) == true && forming_number == -1)
+                {
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = (int)char.GetNumericValue(row_field[i]);
+                }//if
+                else if (System.Char.IsDigit(row_field, i) == true && hyphen == true && end_number == -1)
+                {
+                    end_string.Append(row_field[i]);
+                    end_number = (int)char.GetNumericValue(row_field[i]);
+                }
+                else if (System.Char.IsDigit(row_field, i) == true && hyphen == true)
+                {
+                    end_string.Append(row_field[i]);
+                    end_number = end_number * 10 + (int)char.GetNumericValue(row_field[i]);
+                }
+                else if (System.Char.IsDigit(row_field, i) == true && hyphen == false)
+                {
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = forming_number * 10 + (int)char.GetNumericValue(row_field[i]);
+                }
+
+                    //NO HYPHEN
+                else if (hyphen == false && (row_field[i] == '.' || row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
+                {
+
+                    if (forming_number > max_rows || forming_number == -1)
+                    {
+                        continue;
+                    }
+
+                    parameter.Append(forming_number_string);
+                    command.Append(parameter).Append("\r");
+                    if (single_command == "rcap")
+                    {
+                    }
+                    else if (single_command == "dcap")
+                    {
+                    }
+                    else if (single_command == "LHP")
+                    {
+                    }
+                    else
+                    {
+                        Warning.Text = "Warning: Missed a single command";
+                    }
+                    parameter.Clear();
+                    command.Clear();
+                    command.Append(single_command).Append(" ");
+                    forming_number_string.Clear();
+                    forming_number = -1;
+                    //status_report.Text = Globals.FluidxPort.ReadLine();
+                }//elseif NO HYPHEN
+
+                    //HYPHEN
+                else if (hyphen == true && (row_field[i] == '.' || row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
+                {
+
+                    if (forming_number > max_rows || forming_number == -1)
+                    {
+                        continue;
+                    }
+
+                    for (int j = forming_number; j <= end_number; j++)
+                    {
+                        parameter.Append(forming_number_string);
+                        command.Append(parameter).Append("\r");
+                        if (single_command == "rcap")
+                        {
+                        }
+                        else if (single_command == "dcap")
+                        {
+                        }
+                        else if (single_command == "LHP")
+                        {
+     
+                        }
+                        else
+                        {
+                            Warning.Text = "Warning: Missed a single command";
+                        }
+
+                        parameter.Clear();
+                        command.Clear();
+                        command.Append(single_command).Append(" ");
+                        forming_number_string.Clear();
+                        if (j != end_number)
+                        {
+                            forming_number_string.Append((j + 1).ToString());
+                        }
+                        //status_report.Text = Globals.FluidxPort.ReadLine();
+                    }
+
+
+
+
+                    parameter.Clear();
+                    command.Clear();
+                    command.Append(single_command).Append(" ");
+                    forming_number_string.Clear();
+                    forming_number = -1;
+                    end_number = -1;
+                    end_string.Clear();
+                    //if (row_field[i] != ' ')
+                    //{
+                    hyphen = false;
+                    //}
+                }//elseif HYPHEN
+                else if (row_field[i] == '-')
+                {
+                    hyphen = true;
+                }
+
+            }//for
+        }
 
         private void thread_safe_port_write(string message)
         {
@@ -562,8 +707,34 @@ namespace Csharp_GUI
 
         public int tsFillRow()
         {
+            StringBuilder rows_by_checkboxes = new StringBuilder();
+            if(checkBox2.Checked == true)
+                rows_by_checkboxes.Append("0,");
+            else if(checkBox3.Checked == true)
+                rows_by_checkboxes.Append("1,");
+            else if (checkBox4.Checked == true)
+                rows_by_checkboxes.Append("2,");
+            else if (checkBox7.Checked == true)
+                rows_by_checkboxes.Append("3,");
+            else if (checkBox6.Checked == true)
+                rows_by_checkboxes.Append("4,");
+            else if (checkBox5.Checked == true)
+                rows_by_checkboxes.Append("5,");
+            else if (checkBox13.Checked == true)
+                rows_by_checkboxes.Append("6,");
+            else if (checkBox12.Checked == true)
+                rows_by_checkboxes.Append("7,");
+            else if (checkBox11.Checked == true)
+                rows_by_checkboxes.Append("8,");
+            else if (checkBox10.Checked == true)
+                rows_by_checkboxes.Append("9,");
+            else if (checkBox9.Checked == true)
+                rows_by_checkboxes.Append("10,");
+            else if (checkBox8.Checked == true)
+                rows_by_checkboxes.Append("11,");
+
             string row_field = textBox3.Text + "\0";
-            if (checkBox1.Text == "Checked")
+            if (checkBox1.Checked == true)
             {
                 fire_commands("LHP", row_field, textBox4.Text, textBox5.Text, " -1");
             }
@@ -622,9 +793,9 @@ namespace Csharp_GUI
             {
                 int j = i + 1;
                 label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
-                portWrite("dcap 7\r");
+                portWrite("dcap " + Globals.Max_string + "\r");
                 portWrite("to \r");
-                portWrite("rcap 7\r");
+                portWrite("rcap " + Globals.Max_string + "\r");
                 if (Globals.cycleHalt == true)
                 {
                     closeThread();
@@ -649,13 +820,13 @@ namespace Csharp_GUI
             {
                 int j = i + 1;
                 label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
-                portWrite("dcap 7\r");
-                portWrite("pc 7 \r");
+                portWrite("dcap " + Globals.Max_string + "\r");
+                portWrite("pc " + Globals.Max_string + " \r");
                 portWrite("PIN\r");
-                portWrite("LHP 7\r");
+                portWrite("LHP " + Globals.Max_string + "\r");
                 portWrite("PTS 2000 700 1\r");
-                portWrite("gc 7 \r");
-                portWrite("rcap 7\r");
+                portWrite("gc " + Globals.Max_string + " \r");
+                portWrite("rcap " + Globals.Max_string + "\r");
                 if (Globals.cycleHalt == true)
                 {
                     closeThread();
@@ -704,7 +875,7 @@ namespace Csharp_GUI
             {
                 int j = k + 1;
                 label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < Globals.Max_int + 1; i++)
                 {
 
                     portWrite("dcap " + i.ToString() + "\r");
@@ -719,7 +890,6 @@ namespace Csharp_GUI
                 }
             }
             portWrite("to \r");
-            //fire_commands("LHP", "0-7\0", textBox4.Text, textBox5.Text, " -1");
             closeThread();
             return 0;
         }
@@ -753,7 +923,11 @@ namespace Csharp_GUI
 
         private void button28_Click(object sender, EventArgs e)
         {
-            StartButtonThread(tsFillDemo5);
+            if (MessageBox.Show("Are you sure you want to fill the whole rack?", "Liquid Handling Warning",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
+            {
+                StartButtonThread(tsFillDemo5);
+            }
         }
 
         public int tsFillDemo5()
@@ -762,7 +936,7 @@ namespace Csharp_GUI
             {
                 int j = i + 1;
                 label35.Text = "cycle " + j.ToString() + " out of " + Globals.demo_cycles;
-                fire_commands("LHP", "0-7\0", " 2000 " , "500 ", " -1");
+                fire_commands("LHP", "0-" + Globals.Max_string + "\0", " 2000 ", "500 ", " -1");
                 if (Globals.cycleHalt == true)
                 {
                     closeThread();
@@ -842,6 +1016,14 @@ namespace Csharp_GUI
 
         }
 
+        private void Com_Select_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                Connect_to_Machine_Click_1(sender, e);
+            }
+        }
+
         private void button23_Click_1(object sender, EventArgs e)
         {
 
@@ -902,6 +1084,300 @@ namespace Csharp_GUI
         {
 
         }
+
+        private void radioButton10_CheckedChanged(object sender, EventArgs e)
+        {
+            panel6.Visible = false;
+            panel6.Enabled = false;
+            panel27.Visible = true;
+            panel27.Enabled = true;
+            portWrite("seto 0 \r");
+            portWrite("LCDP 4 \r");
+            Globals.Max_int = 7;
+            Globals.Max_string = "7";
+        }
+
+        private void radioButton9_CheckedChanged(object sender, EventArgs e)
+        {
+            panel27.Visible = false;
+            panel27.Enabled = false;
+            panel6.Visible = true;
+            panel6.Enabled = true;
+            portWrite("seto 1 \r");
+            portWrite("LCDP 5 \r");
+            Globals.Max_int = 11;
+            Globals.Max_string = "11";
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton89_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel6_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel6_mouse_down(object sender, MouseEventArgs e)//horizontal
+        {
+            init_rect(sender, e);            
+        }
+
+        public void init_rect(object sender, MouseEventArgs e)
+        {
+            bool CtrlPressed = ModifierKeys.HasFlag(Keys.Control);
+            StringBuilder row_field = new StringBuilder();
+            Panel senderobj = (Panel)sender;
+            Point relative_location = senderobj.Location;
+            Globals.panel_6_cursor = e.Location;
+            Globals.panel_6_cursor.X = Globals.panel_6_cursor.X + relative_location.X;
+            Globals.panel_6_cursor.Y = Globals.panel_6_cursor.Y + relative_location.Y;
+            //textBox3
+            Globals.mouse_down = 1;
+            for (int i = 0; i < 12; i++)
+            {
+                
+                Rectangle panel_rect = new Rectangle(Globals.hrows[i].Location.X, Globals.hrows[i].Location.Y, Globals.hrows[i].Width, Globals.hrows[i].Height);
+                if (panel_rect.Contains(Globals.panel_6_cursor) == true)
+                {
+                    if (Globals.hrows[i].BackColor == Color.DarkTurquoise)
+                    {
+                        Globals.hrows[i].BackColor = Color.Gold;
+                    }
+                    else
+                    {
+                        Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                    }
+                    Globals.currentPanel = Globals.hrows[i];
+                    Globals.currently_active.Add(Globals.hrows[i]);
+                }
+                else
+                {
+                    if (CtrlPressed == false)
+                    {
+                        Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                    }
+                    
+                }
+            }
+        }
+
+        public void drag_rect(object sender, MouseEventArgs e)
+        {
+            if (Globals.mouse_down == 0)
+            {
+                return;
+            }
+            bool CtrlPressed = ModifierKeys.HasFlag(Keys.Control);
+            //this.Cursor = new Cursor(Cursor.Current.Handle);
+            Panel senderobj = (Panel)sender;
+            Point relative_location = senderobj.Location;
+
+            Point a_corner_point = e.Location;
+            a_corner_point.X = a_corner_point.X + relative_location.X;
+            a_corner_point.Y = a_corner_point.Y + relative_location.Y;
+
+            int temp = 0;
+
+            //label36.Text = "Mouse Move: " + Globals.panel_6_cursor.X.ToString() + "," + Globals.panel_6_cursor.Y.ToString();
+
+            Globals.select_roi.X = Globals.panel_6_cursor.X;
+            Globals.select_roi.Y = Globals.panel_6_cursor.Y;
+
+            if (Globals.select_roi.X > a_corner_point.X)//see if need to swap
+            {
+                temp = Globals.select_roi.X;
+                Globals.select_roi.X = a_corner_point.X;
+                a_corner_point.X = temp;
+            }
+
+            if (Globals.select_roi.Y > a_corner_point.Y)//see if need to swap
+            {
+                temp = Globals.select_roi.Y;
+                Globals.select_roi.Y = a_corner_point.Y;
+                a_corner_point.Y = temp;
+            }
+
+            Globals.select_roi.Width = a_corner_point.X - Globals.select_roi.X;
+            Globals.select_roi.Height = a_corner_point.Y - Globals.select_roi.Y;
+
+          //  label36.Text = "Mouse Move: " + Globals.select_roi.X.ToString() + " , " + Globals.select_roi.Y.ToString()
+          //      + " , " + Globals.select_roi.Width.ToString() + " , " + Globals.select_roi.X.ToString();
+
+            label36.Text = "Mouse Move: " + Globals.currentPanel.Location.X.ToString() + " , " + Globals.currentPanel.Location.Y.ToString();
+
+            for (int i = 0; i < 12; i++)
+            {
+                Rectangle panel_rect = new Rectangle(Globals.hrows[i].Location.X, Globals.hrows[i].Location.Y, Globals.hrows[i].Width, Globals.hrows[i].Height);
+                if (Globals.select_roi.IntersectsWith(panel_rect))
+                {
+                    if (Globals.currentPanel != Globals.hrows[i] )
+                    {
+                        if (!Globals.currently_active.Contains(Globals.hrows[i]))
+                        {
+                            if (Globals.hrows[i].BackColor == Color.DarkTurquoise)
+                            {
+                                Globals.hrows[i].BackColor = Color.Gold;
+                            }
+                            else
+                            {
+                                Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                            }
+                            //Rectangle last_active = new Rectangle(Globals.currentPanel.Location.X, Globals.currentPanel.Location.Y, Globals.currentPanel.Width, Globals.currentPanel.Height);
+                            //if (!Globals.select_roi.IntersectsWith(last_active))
+                            //{
+                            //    Globals.currently_active.Remove(Globals.currentPanel);
+                            //    Globals.currentPanel.BackColor = Color.DarkTurquoise;
+                            //}
+
+                            Globals.currently_active.Add(Globals.hrows[i]);
+                        }
+                        else
+                        {
+                            Rectangle last_active = new Rectangle(Globals.currentPanel.Location.X, Globals.currentPanel.Location.Y, Globals.currentPanel.Width, Globals.currentPanel.Height);
+                            if (!Globals.select_roi.IntersectsWith(last_active))
+                            {
+                                //label37.Text = ()
+                                Globals.currently_active.Remove(Globals.currentPanel);
+                                //if()
+                                if (Globals.currentPanel.BackColor == Color.Gold)
+                                {
+                                    Globals.currentPanel.BackColor = Color.DarkTurquoise;
+                                }
+                                else
+                                {
+                                    Globals.currentPanel.BackColor = Color.Gold;
+                                }
+                                label37.Text = "If Good\n";
+                            }
+                            else
+                            {
+                              //  label37.Text = "Else Bad\n";
+                            }
+                        }
+
+                        Globals.currentPanel = Globals.hrows[i];
+                    }// if not in same pamel
+                    else
+                    {
+                        
+                    }
+                }
+                else//not intersect with roi
+                {
+                    if (Globals.currentPanel != Globals.hrows[i])
+                    {
+                        if (Globals.currently_active.Contains(Globals.hrows[i]))
+                        {
+                           // Globals.currently_active.Remove(Globals.currentPanel);
+                        }
+                    }
+
+                    if (Globals.currently_active.Contains(Globals.hrows[i]) )
+                    {
+                        if (CtrlPressed == false)
+                        {
+                         //   Globals.currently_active.Remove(Globals.hrows[i]);
+                         //   Globals.currentPanel.BackColor = Color.DarkTurquoise;
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    else
+                    {
+
+                        //Globals.currently_active.Remove(Globals.currentPanel);
+
+                    }
+                    //
+                    //if (CtrlPressed == false)
+                    //{
+                    //    Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                    //}
+                }
+            }
+        }
+
+        private void panel6_mouse_move(object sender, MouseEventArgs e)
+        {
+            drag_rect(sender, e);
+        }
+
+        public bool boundary_detection(Panel panel)
+        {
+            
+            if (panel.Location.X == 0)
+            {
+            }
+            return false;
+        }
+
+        private void panel6_mouse_up(object sender, MouseEventArgs e)
+        {
+            mouse_up();
+        }
+
+        public void mouse_up()
+        {
+            Globals.mouse_down = 0;
+            Globals.currentPanel = hiddenPanel;
+            Globals.currently_active.RemoveRange(0, Globals.currently_active.Count);
+        }
+
+        private void panel14_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void radioButton70_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton201_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Vpanel_onclick(object sender, EventArgs e)
+        {
+           // panel6_mouse_down(sender,e);
+        }
+
+        private void Vpanel_clicked(object sender, MouseEventArgs e)
+        {
+            init_rect(sender, e);
+        }
+
+        private void Vpanel_mouse_move(object sender, MouseEventArgs e)
+        {
+            
+            drag_rect(sender, e);
+        }
+
+        private void Vpanel_mouse_up(object sender, MouseEventArgs e)
+        {
+            mouse_up();
+        }
+
         //private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         //{
         //    var port = (SerialPort)sender;
@@ -924,6 +1400,16 @@ namespace Csharp_GUI
 
     public class Globals
     {
+        public static List<Panel> currently_active;
+        public static Panel currentPanel;
+        public static bool CtrlKeyPressed = false;
+        public static Rectangle select_roi = new Rectangle(0,0,0,0);
+        public static List<Panel> hrows;
+        public static List<Panel> vrows;
+        public static Point panel_6_cursor;
+        public static Point panel_27_cursor;
+        public static int mouse_down = 0;
+        public static int mouse_up = 1;
         public static int Max_int = 7;
         public static string Max_string = "7";
         public static int hMax_int = 7;
