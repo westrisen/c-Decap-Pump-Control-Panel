@@ -1220,7 +1220,8 @@ namespace Csharp_GUI
           //  label36.Text = "Mouse Move: " + Globals.select_roi.X.ToString() + " , " + Globals.select_roi.Y.ToString()
           //      + " , " + Globals.select_roi.Width.ToString() + " , " + Globals.select_roi.X.ToString();
 
-            label36.Text = "Mouse Move: " + Globals.currentPanel.Location.X.ToString() + " , " + Globals.currentPanel.Location.Y.ToString();
+            label36.Text = "Mouse Move: " + Globals.currentPanel.Location.X.ToString() + " , " + Globals.currentPanel.Location.Y.ToString()
+                +" and list is this long: "+ Globals.currently_active.Count.ToString();
 
             for (int i = 0; i < 12; i++)
             {
@@ -1234,10 +1235,12 @@ namespace Csharp_GUI
                             if (Globals.hrows[i].BackColor == Color.DarkTurquoise)
                             {
                                 Globals.hrows[i].BackColor = Color.Gold;
+                                //Globals.currentPanel = Globals.hrows[i];
                             }
                             else
                             {
                                 Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                                //Globals.currentPanel = Globals.hrows[i];
                             }
                             //Rectangle last_active = new Rectangle(Globals.currentPanel.Location.X, Globals.currentPanel.Location.Y, Globals.currentPanel.Width, Globals.currentPanel.Height);
                             //if (!Globals.select_roi.IntersectsWith(last_active))
@@ -1245,7 +1248,7 @@ namespace Csharp_GUI
                             //    Globals.currently_active.Remove(Globals.currentPanel);
                             //    Globals.currentPanel.BackColor = Color.DarkTurquoise;
                             //}
-
+                            
                             Globals.currently_active.Add(Globals.hrows[i]);
                         }
                         else
@@ -1259,20 +1262,22 @@ namespace Csharp_GUI
                                 if (Globals.currentPanel.BackColor == Color.Gold)
                                 {
                                     Globals.currentPanel.BackColor = Color.DarkTurquoise;
+                                    //Globals.currentPanel = Globals.hrows[i];
                                 }
                                 else
                                 {
                                     Globals.currentPanel.BackColor = Color.Gold;
+                                    //Globals.currentPanel = Globals.hrows[i];
                                 }
-                                label37.Text = "If Good\n";
+                                label37.Text = "If Good" ;
                             }
                             else
                             {
                               //  label37.Text = "Else Bad\n";
                             }
                         }
-
-                        Globals.currentPanel = Globals.hrows[i];
+                        Globals.currentPanel = Globals.currently_active[Globals.currently_active.Count - 1];
+                        //Globals.currentPanel = Globals.hrows[i];
                     }// if not in same pamel
                     else
                     {
