@@ -521,6 +521,12 @@ namespace Csharp_GUI
 
         public void row_field_parser(string single_command, string row_field, string arg2, string arg3, string arg4)
         {
+            if (Globals.GUI_active == true)
+            {
+                Globals.GUI_active = false;
+                return;
+            }
+            List<int> indexList = new List<int>{};
             StringBuilder return_code = new StringBuilder();
             int end_number = -1;
             StringBuilder end_string = new StringBuilder();
@@ -565,22 +571,11 @@ namespace Csharp_GUI
                     {
                         continue;
                     }
-
+                    indexList.Add(forming_number);
+                    //Globals.hrows[forming_number].BackColor = Color.Gold;
                     parameter.Append(forming_number_string);
                     command.Append(parameter).Append("\r");
-                    if (single_command == "rcap")
-                    {
-                    }
-                    else if (single_command == "dcap")
-                    {
-                    }
-                    else if (single_command == "LHP")
-                    {
-                    }
-                    else
-                    {
-                        Warning.Text = "Warning: Missed a single command";
-                    }
+
                     parameter.Clear();
                     command.Clear();
                     command.Append(single_command).Append(" ");
@@ -600,6 +595,8 @@ namespace Csharp_GUI
 
                     for (int j = forming_number; j <= end_number; j++)
                     {
+                        indexList.Add(j);
+                        //Globals.hrows[j].BackColor = Color.Gold;
                         parameter.Append(forming_number_string);
                         command.Append(parameter).Append("\r");
                         if (single_command == "rcap")
@@ -649,6 +646,15 @@ namespace Csharp_GUI
                 }
 
             }//for
+            for (int i = 0; i < Globals.hrows.Count; i++)
+            {
+               // if(
+                Globals.hrows[i].BackColor = Color.DarkTurquoise;
+            }
+            for (int index = 0; index < indexList.Count; index++)
+            {
+                Globals.hrows[indexList[index]].BackColor = Color.Gold;
+            }
         }
 
         private void thread_safe_port_write(string message)
@@ -748,7 +754,7 @@ namespace Csharp_GUI
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
-
+            row_field_parser("", textBox3.Text + "\0", "", "", "");
         }
 
         private void button18_Click(object sender, EventArgs e)
@@ -1148,6 +1154,7 @@ namespace Csharp_GUI
 
         public void GUI_to_text()
         {
+            Globals.GUI_active = true;
             bool has_row = false;
             int straight_count = 0;
             bool consecutive = false;
@@ -1219,7 +1226,7 @@ namespace Csharp_GUI
 
         }
 
-        public void init_rect(object sender, MouseEventArgs e)
+        public void init_rect(object sender, MouseEventArgs e/*, List<Panel> tray_rows*/)
         {
             bool CtrlPressed = ModifierKeys.HasFlag(Keys.Control);
             StringBuilder row_field = new StringBuilder();
@@ -1519,6 +1526,7 @@ namespace Csharp_GUI
 
     public class Globals
     {
+        public static bool GUI_active = false;
         public static List<Panel> currently_active;
         public static Panel currentPanel;
         public static bool CtrlKeyPressed = false;
