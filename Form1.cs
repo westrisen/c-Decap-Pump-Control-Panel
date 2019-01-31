@@ -96,8 +96,11 @@ namespace Csharp_GUI
             portWrite("kl \r");
             portWrite("PIN\r");
             portWrite("seto 0 \r");
+            Globals.Max_int = 7;
 
 //foreach(Panel
+            Globals.hcap_rows = new List<Panel> { panel42, panel47, panel45, panel43, panel44, panel46, panel48, panel49 };
+            Globals.vcap_rows = new List<Panel> { panel30, panel31, panel32, panel33, panel34, panel35, panel29, panel36, panel37, panel38, panel39, panel40};
             Globals.hrows = new List<Panel> { panel14, panel16, panel17, panel18, panel10, panel11, panel12, panel13, panel8, panel9, panel7, panel15, };
             Globals.vrows = new List<Panel> {panel23, panel24, panel25, panel26, panel21, panel22, panel20, panel19 };
             Globals.currently_active = new List<Panel> { };
@@ -312,7 +315,7 @@ namespace Csharp_GUI
         public int tsDecapRow()
         {
             string row_field = textBox8.Text + "\0";
-            fire_commands("dcap", row_field, "", "", "");
+            fire_commands("dcap", convert_to_0_based(row_field), "", "", "");
             Globals.FluidxBusy = false;
             closeThread();
             return 0;
@@ -326,7 +329,7 @@ namespace Csharp_GUI
         public int tsCapRow()
         {
             string row_field = textBox8.Text + "\0";
-            fire_commands("rcap", row_field, "", "", "");
+            fire_commands("rcap", convert_to_0_based(row_field), "", "", "");
             Globals.FluidxBusy = false;
             closeThread();
             return 0;
@@ -519,7 +522,7 @@ namespace Csharp_GUI
            // port.Close();
         }//fire_commands
 
-        public void row_field_parser(string single_command, string row_field, string arg2, string arg3, string arg4)
+        public void row_field_parser(string row_field, List<Panel> tray_rows)
         {
             if (Globals.GUI_active == true)
             {
@@ -533,11 +536,9 @@ namespace Csharp_GUI
             bool hyphen = false;
             StringBuilder parameter = new StringBuilder();
             StringBuilder command = new StringBuilder();
-            command.Append(single_command).Append(" ");
             StringBuilder forming_number_string = new StringBuilder();
-            //string row_field = textBox8.Text + "\0";
 
-            int max_rows = 11;
+            int max_rows = Globals.Max_int;
             int forming_number = -1;
 
             for (int i = 0; i < row_field.Length; i++)
@@ -572,16 +573,13 @@ namespace Csharp_GUI
                         continue;
                     }
                     indexList.Add(forming_number);
-                    //Globals.hrows[forming_number].BackColor = Color.Gold;
                     parameter.Append(forming_number_string);
                     command.Append(parameter).Append("\r");
 
                     parameter.Clear();
                     command.Clear();
-                    command.Append(single_command).Append(" ");
                     forming_number_string.Clear();
                     forming_number = -1;
-                    //status_report.Text = Globals.FluidxPort.ReadLine();
                 }//elseif NO HYPHEN
 
                     //HYPHEN
@@ -592,37 +590,24 @@ namespace Csharp_GUI
                     {
                         continue;
                     }
+                    if (end_number >= Globals.Max_int)
+                    {
+                        end_number = Globals.Max_int;
+                    }
 
                     for (int j = forming_number; j <= end_number; j++)
                     {
                         indexList.Add(j);
-                        //Globals.hrows[j].BackColor = Color.Gold;
                         parameter.Append(forming_number_string);
                         command.Append(parameter).Append("\r");
-                        if (single_command == "rcap")
-                        {
-                        }
-                        else if (single_command == "dcap")
-                        {
-                        }
-                        else if (single_command == "LHP")
-                        {
-     
-                        }
-                        else
-                        {
-                            Warning.Text = "Warning: Missed a single command";
-                        }
 
                         parameter.Clear();
                         command.Clear();
-                        command.Append(single_command).Append(" ");
                         forming_number_string.Clear();
                         if (j != end_number)
                         {
                             forming_number_string.Append((j + 1).ToString());
                         }
-                        //status_report.Text = Globals.FluidxPort.ReadLine();
                     }
 
 
@@ -630,7 +615,6 @@ namespace Csharp_GUI
 
                     parameter.Clear();
                     command.Clear();
-                    command.Append(single_command).Append(" ");
                     forming_number_string.Clear();
                     forming_number = -1;
                     end_number = -1;
@@ -646,14 +630,14 @@ namespace Csharp_GUI
                 }
 
             }//for
-            for (int i = 0; i < Globals.hrows.Count; i++)
+            for (int i = 0; i < tray_rows.Count; i++)
             {
                // if(
-                Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                tray_rows[i].BackColor = Color.DarkTurquoise;
             }
             for (int index = 0; index < indexList.Count; index++)
             {
-                Globals.hrows[indexList[index]].BackColor = Color.Gold;
+                tray_rows[indexList[index]].BackColor = Color.Gold;
             }
         }
 
@@ -698,7 +682,14 @@ namespace Csharp_GUI
 
         private void textBox8_TextChanged(object sender, EventArgs e)
         {
-
+            if (Globals.Max_int == 11)
+            {
+                row_field_parser(convert_to_0_based(textBox8.Text + "\0"), Globals.vcap_rows);
+            }
+            else
+            {
+                row_field_parser(convert_to_0_based(textBox8.Text + "\0"), Globals.hcap_rows);
+            }
         }
 
         private void label9_Click(object sender, EventArgs e)
@@ -714,47 +705,92 @@ namespace Csharp_GUI
         public int tsFillRow()
         {
             StringBuilder rows_by_checkboxes = new StringBuilder();
-            if(checkBox2.Checked == true)
-                rows_by_checkboxes.Append("0,");
-            else if(checkBox3.Checked == true)
-                rows_by_checkboxes.Append("1,");
-            else if (checkBox4.Checked == true)
-                rows_by_checkboxes.Append("2,");
-            else if (checkBox7.Checked == true)
-                rows_by_checkboxes.Append("3,");
-            else if (checkBox6.Checked == true)
-                rows_by_checkboxes.Append("4,");
-            else if (checkBox5.Checked == true)
-                rows_by_checkboxes.Append("5,");
-            else if (checkBox13.Checked == true)
-                rows_by_checkboxes.Append("6,");
-            else if (checkBox12.Checked == true)
-                rows_by_checkboxes.Append("7,");
-            else if (checkBox11.Checked == true)
-                rows_by_checkboxes.Append("8,");
-            else if (checkBox10.Checked == true)
-                rows_by_checkboxes.Append("9,");
-            else if (checkBox9.Checked == true)
-                rows_by_checkboxes.Append("10,");
-            else if (checkBox8.Checked == true)
-                rows_by_checkboxes.Append("11,");
 
             string row_field = textBox3.Text + "\0";
             if (checkBox1.Checked == true)
             {
-                fire_commands("LHP", row_field, textBox4.Text, textBox5.Text, " -1");
+                fire_commands("LHP", convert_to_0_based(row_field), textBox4.Text, textBox5.Text, " -1");
             }
             else
             {
-                fire_commands("LHP", row_field, textBox4.Text, textBox5.Text, " 1");
+                fire_commands("LHP", convert_to_0_based(row_field), textBox4.Text, textBox5.Text, " 1");
             }
             closeThread();
             return 0;
         }
 
+        public string convert_to_0_based(string row_field)
+        {
+            StringBuilder forming_number_string = new StringBuilder();
+            int forming_number = -1;
+            StringBuilder zero_based = new StringBuilder();
+            for (int i = 0; i < row_field.Length; i++)
+            {
+
+                if (System.Char.IsDigit(row_field, i) == true && forming_number == -1)
+                {
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = (int)char.GetNumericValue(row_field[i]);
+                }
+                else if (System.Char.IsDigit(row_field, i) == true)
+                {
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = forming_number * 10 + (int)char.GetNumericValue(row_field[i]);
+                }
+                else if (row_field[i] == '-' || row_field[i] == '.' || row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0')
+                {
+                    //label47.Text = "delimiter";
+                    forming_number--;
+                    if (forming_number >= 0)
+                    {
+                        zero_based.Append(forming_number.ToString());
+                    }
+
+                    zero_based.Append(row_field[i]);
+                    forming_number = -1;
+                }
+                
+            }
+            //label47.Text = row_field;
+            label47.Text = zero_based.ToString();
+            return zero_based.ToString();
+        }
+
+        /*
+         * if (hyphen == false && System.Char.IsDigit(row_field, i) == true && forming_number == -1)
+                {
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = (int)char.GetNumericValue(row_field[i]);
+                }//if
+                else if (System.Char.IsDigit(row_field, i) == true && hyphen == true && end_number == -1)
+                {
+                    end_string.Append(row_field[i]);
+                    end_number = (int)char.GetNumericValue(row_field[i]);
+                }
+                else if (System.Char.IsDigit(row_field, i) == true && hyphen == true)
+                {
+                    end_string.Append(row_field[i]);
+                    end_number = end_number * 10 + (int)char.GetNumericValue(row_field[i]);
+                }
+                else if (System.Char.IsDigit(row_field, i) == true && hyphen == false)
+                {
+                    forming_number_string.Append(row_field[i]);
+                    forming_number = forming_number * 10 + (int)char.GetNumericValue(row_field[i]);
+                }
+         */
+
+
+
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
-            row_field_parser("", textBox3.Text + "\0", "", "", "");
+            if (Globals.Max_int == 11)
+            {
+                row_field_parser(convert_to_0_based(textBox3.Text + "\0"), Globals.hrows);
+            }
+            else
+            {
+                row_field_parser(convert_to_0_based(textBox3.Text + "\0"), Globals.vrows);
+            }
         }
 
         private void button18_Click(object sender, EventArgs e)
@@ -1091,20 +1127,29 @@ namespace Csharp_GUI
 
         }
 
-        private void radioButton10_CheckedChanged(object sender, EventArgs e)
+        private void radioButton10_CheckedChanged(object sender, EventArgs e)//horizontal
         {
-            panel6.Visible = false;
             panel6.Enabled = false;
+            panel6.Visible = false;
+            
             panel27.Visible = true;
             panel27.Enabled = true;
+            panel28.Visible = false;
+            panel28.Enabled = false;
+            panel41.Visible = true;
+            panel41.Enabled = true;
             portWrite("seto 0 \r");
             portWrite("LCDP 4 \r");
             Globals.Max_int = 7;
             Globals.Max_string = "7";
         }
 
-        private void radioButton9_CheckedChanged(object sender, EventArgs e)
+        private void radioButton9_CheckedChanged(object sender, EventArgs e)//vertical
         {
+            panel41.Enabled = false;
+            panel41.Visible = false;
+            panel28.Visible = true;
+            panel28.Enabled = true;
             panel27.Visible = false;
             panel27.Enabled = false;
             panel6.Visible = true;
@@ -1142,7 +1187,7 @@ namespace Csharp_GUI
 
         private void panel6_mouse_down(object sender, MouseEventArgs e)//horizontal
         {
-            init_rect(sender, e, Globals.hrows);            
+            init_rect(sender, e, Globals.hrows, textBox3);            
         }
 
 
@@ -1152,7 +1197,7 @@ namespace Csharp_GUI
             textBox3.Text = textBox3.Text.Replace(x, "");
         }
 
-        public void GUI_to_text(List<Panel> tray_rows)
+        public void GUI_to_text(List<Panel> tray_rows, TextBox tb)
         {
             Globals.GUI_active = true;
             bool has_row = false;
@@ -1160,21 +1205,22 @@ namespace Csharp_GUI
             bool consecutive = false;
             int first;
             int last;
-            textBox3.Text = "";
+            tb.Text = "";
             StringBuilder row_field = new StringBuilder();
             for (int i = 0; i < Globals.Max_int + 1; i++)
             {
+                int j = i + 1;
                 if (i == Globals.Max_int && tray_rows[i].BackColor == Color.Gold)
                 {
                     straight_count++;
                     has_row = true;
                     if (consecutive == true)
                     {
-                        row_field.Append("-" + i.ToString());//WOOLOO
+                        row_field.Append("-" + j.ToString());//WOOLOO
                     }
                     else
                     {
-                        row_field.Append("," + i.ToString());//WOOLOO
+                        row_field.Append("," + j.ToString());//WOOLOO
                     }
                 }
                 else if (tray_rows[i].BackColor == Color.Gold)
@@ -1189,7 +1235,7 @@ namespace Csharp_GUI
                     {
                         straight_count++;
                         consecutive = true;
-                        row_field.Append("," + i.ToString());//WOOLOO
+                        row_field.Append("," + j.ToString());//WOOLOO
                     }
                     else//if consecutive
                     {
@@ -1203,8 +1249,8 @@ namespace Csharp_GUI
 
                     if (consecutive == true && straight_count > 1)
                     {
-                        int j = i - 1;//WOOLOO
-                        row_field.Append("-" + j.ToString());//WOOLOO
+                        //int j = i - 1;//WOOLOO
+                        row_field.Append("-" + i.ToString());//WOOLOO
                     }
                     consecutive = false;
                     //row_field.Append(",");
@@ -1217,16 +1263,16 @@ namespace Csharp_GUI
             }
             if (has_row == true)
             {
-                textBox3.Text = row_field.ToString();
+                tb.Text = row_field.ToString();
             }
             else
             {
-                textBox3.Text = "";
+                tb.Text = "";
             }
 
         }
 
-        public void init_rect(object sender, MouseEventArgs e, List<Panel> tray_rows)
+        public void init_rect(object sender, MouseEventArgs e, List<Panel> tray_rows, TextBox tb)
         {
             bool CtrlPressed = ModifierKeys.HasFlag(Keys.Control);
             StringBuilder row_field = new StringBuilder();
@@ -1271,10 +1317,10 @@ namespace Csharp_GUI
                     
                 }
             }
-            GUI_to_text(tray_rows);
+            GUI_to_text(tray_rows, tb);
         }
 
-        public void drag_rect(object sender, MouseEventArgs e, List<Panel> tray_rows)
+        public void drag_rect(object sender, MouseEventArgs e, List<Panel> tray_rows, TextBox tb)
         {
             if (Globals.mouse_down == 0)
             {
@@ -1429,13 +1475,13 @@ namespace Csharp_GUI
             }
             if (change_occurred == true)
             {
-                GUI_to_text(tray_rows);
+                GUI_to_text(tray_rows, tb);
             }
         }
 
         private void panel6_mouse_move(object sender, MouseEventArgs e)
         {
-            drag_rect(sender, e, Globals.hrows);
+            drag_rect(sender, e, Globals.hrows, textBox3);
         }
 
         public bool boundary_detection(Panel panel)
@@ -1481,13 +1527,13 @@ namespace Csharp_GUI
 
         private void Vpanel_clicked(object sender, MouseEventArgs e)
         {
-            init_rect(sender, e, Globals.hrows);
+            init_rect(sender, e, Globals.hrows, textBox3);
         }
 
         private void Vpanel_mouse_move(object sender, MouseEventArgs e)
         {
             
-            drag_rect(sender, e, Globals.hrows);
+            drag_rect(sender, e, Globals.hrows, textBox3);
         }
 
         private void Vpanel_mouse_up(object sender, MouseEventArgs e)
@@ -1497,12 +1543,52 @@ namespace Csharp_GUI
 
         private void Hpanel_clicked(object sender, MouseEventArgs e)
         {
-            init_rect(sender, e, Globals.vrows);
+            init_rect(sender, e, Globals.vrows, textBox3);
         }
 
         private void Hpanel_mouse_move(object sender, MouseEventArgs e)
         {
-            drag_rect(sender, e, Globals.vrows);
+            drag_rect(sender, e, Globals.vrows, textBox3);
+        }
+
+        private void Vcap_rows_clicked(object sender, MouseEventArgs e)
+        {
+            init_rect(sender, e, Globals.vcap_rows, textBox8);
+        }
+
+        private void Vcap_rows_move(object sender, MouseEventArgs e)
+        {
+            drag_rect(sender, e, Globals.vcap_rows, textBox8);
+        }
+
+        private void HCap_row_clicked(object sender, MouseEventArgs e)
+        {
+            init_rect(sender, e, Globals.hcap_rows, textBox8);
+        }
+
+        private void HCap_row_move(object sender, MouseEventArgs e)
+        {
+            drag_rect(sender, e, Globals.hcap_rows, textBox8);
+        }
+
+        private void panel27_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel27_MouseClick(object sender, MouseEventArgs e)
+        {
+            textBox3.Text = "";
+        }
+
+        private void panel41_MouseClick(object sender, MouseEventArgs e)
+        {
+            textBox8.Text = "";
+        }
+
+        private void panel28_MouseClick(object sender, MouseEventArgs e)
+        {
+            textBox8.Text = "";
         }
 
         //private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
@@ -1533,6 +1619,8 @@ namespace Csharp_GUI
         public static bool CtrlKeyPressed = false;
         public static Rectangle select_roi = new Rectangle(0,0,0,0);
         public static List<Panel> hrows;
+        public static List<Panel> hcap_rows;
+        public static List<Panel> vcap_rows;
         public static List<Panel> vrows;
         public static Point panel_6_cursor;
         public static Point panel_27_cursor;
