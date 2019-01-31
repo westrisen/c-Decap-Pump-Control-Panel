@@ -59,9 +59,6 @@ namespace Csharp_GUI
             this.button4 = new System.Windows.Forms.Button();
             this.ON_OFF_button = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.label38 = new System.Windows.Forms.Label();
-            this.label37 = new System.Windows.Forms.Label();
-            this.label36 = new System.Windows.Forms.Label();
             this.panel27 = new System.Windows.Forms.Panel();
             this.panel23 = new System.Windows.Forms.Panel();
             this.radioButton155 = new System.Windows.Forms.RadioButton();
@@ -175,6 +172,9 @@ namespace Csharp_GUI
             this.checkBox18 = new System.Windows.Forms.CheckBox();
             this.checkBox20 = new System.Windows.Forms.CheckBox();
             this.checkBox19 = new System.Windows.Forms.CheckBox();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
+            this.label36 = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.checkBox9 = new System.Windows.Forms.CheckBox();
@@ -652,10 +652,10 @@ namespace Csharp_GUI
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.panel27);
             this.tabPage2.Controls.Add(this.label38);
             this.tabPage2.Controls.Add(this.label37);
             this.tabPage2.Controls.Add(this.label36);
-            this.tabPage2.Controls.Add(this.panel27);
             this.tabPage2.Controls.Add(this.panel6);
             this.tabPage2.Controls.Add(this.label15);
             this.tabPage2.Controls.Add(this.label9);
@@ -669,33 +669,6 @@ namespace Csharp_GUI
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Fill Commands";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(179, 468);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(40, 13);
-            this.label38.TabIndex = 62;
-            this.label38.Text = "Hmm...";
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(171, 420);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(40, 13);
-            this.label37.TabIndex = 61;
-            this.label37.Text = "Hmm...";
-            // 
-            // label36
-            // 
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(171, 505);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(82, 13);
-            this.label36.TabIndex = 60;
-            this.label36.Text = "Rows Selected:";
             // 
             // panel27
             // 
@@ -740,6 +713,9 @@ namespace Csharp_GUI
             this.panel23.Name = "panel23";
             this.panel23.Size = new System.Drawing.Size(245, 21);
             this.panel23.TabIndex = 50;
+            this.panel23.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Hpanel_clicked);
+            this.panel23.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Hpanel_mouse_move);
+            this.panel23.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Vpanel_mouse_up);
             // 
             // radioButton155
             // 
@@ -914,6 +890,9 @@ namespace Csharp_GUI
             this.panel26.Name = "panel26";
             this.panel26.Size = new System.Drawing.Size(245, 21);
             this.panel26.TabIndex = 47;
+            this.panel26.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Hpanel_clicked);
+            this.panel26.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Hpanel_mouse_move);
+            this.panel26.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Vpanel_mouse_up);
             // 
             // radioButton191
             // 
@@ -1079,6 +1058,9 @@ namespace Csharp_GUI
             this.panel21.Name = "panel21";
             this.panel21.Size = new System.Drawing.Size(245, 21);
             this.panel21.TabIndex = 46;
+            this.panel21.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Hpanel_clicked);
+            this.panel21.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Hpanel_mouse_move);
+            this.panel21.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Vpanel_mouse_up);
             // 
             // radioButton131
             // 
@@ -1253,6 +1235,9 @@ namespace Csharp_GUI
             this.panel25.Name = "panel25";
             this.panel25.Size = new System.Drawing.Size(245, 21);
             this.panel25.TabIndex = 48;
+            this.panel25.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Hpanel_clicked);
+            this.panel25.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Hpanel_mouse_move);
+            this.panel25.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Vpanel_mouse_up);
             // 
             // radioButton179
             // 
@@ -1417,6 +1402,9 @@ namespace Csharp_GUI
             this.panel22.Name = "panel22";
             this.panel22.Size = new System.Drawing.Size(245, 21);
             this.panel22.TabIndex = 45;
+            this.panel22.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Hpanel_clicked);
+            this.panel22.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Hpanel_mouse_move);
+            this.panel22.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Vpanel_mouse_up);
             // 
             // radioButton143
             // 
@@ -1591,6 +1579,9 @@ namespace Csharp_GUI
             this.panel24.Name = "panel24";
             this.panel24.Size = new System.Drawing.Size(245, 21);
             this.panel24.TabIndex = 49;
+            this.panel24.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Hpanel_clicked);
+            this.panel24.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Hpanel_mouse_move);
+            this.panel24.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Vpanel_mouse_up);
             // 
             // radioButton167
             // 
@@ -1755,6 +1746,9 @@ namespace Csharp_GUI
             this.panel20.Name = "panel20";
             this.panel20.Size = new System.Drawing.Size(245, 21);
             this.panel20.TabIndex = 44;
+            this.panel20.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Hpanel_clicked);
+            this.panel20.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Hpanel_mouse_move);
+            this.panel20.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Vpanel_mouse_up);
             // 
             // radioButton119
             // 
@@ -1929,6 +1923,9 @@ namespace Csharp_GUI
             this.panel19.Name = "panel19";
             this.panel19.Size = new System.Drawing.Size(245, 21);
             this.panel19.TabIndex = 43;
+            this.panel19.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Hpanel_clicked);
+            this.panel19.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Hpanel_mouse_move);
+            this.panel19.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Vpanel_mouse_up);
             // 
             // radioButton115
             // 
@@ -2113,6 +2110,33 @@ namespace Csharp_GUI
             this.checkBox19.TabIndex = 53;
             this.checkBox19.Text = "Row 3";
             this.checkBox19.UseVisualStyleBackColor = true;
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(179, 468);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(40, 13);
+            this.label38.TabIndex = 62;
+            this.label38.Text = "Hmm...";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(171, 420);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(40, 13);
+            this.label37.TabIndex = 61;
+            this.label37.Text = "Hmm...";
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(171, 505);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(82, 13);
+            this.label36.TabIndex = 60;
+            this.label36.Text = "Rows Selected:";
             // 
             // panel6
             // 

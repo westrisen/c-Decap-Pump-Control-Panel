@@ -99,7 +99,7 @@ namespace Csharp_GUI
 
 //foreach(Panel
             Globals.hrows = new List<Panel> { panel14, panel16, panel17, panel18, panel10, panel11, panel12, panel13, panel8, panel9, panel7, panel15, };
-            Globals.vrows = new List<Panel> {panel23, panel24, panel25, panel26, panel21, panel22, panel26, panel19 };
+            Globals.vrows = new List<Panel> {panel23, panel24, panel25, panel26, panel21, panel22, panel20, panel19 };
             Globals.currently_active = new List<Panel> { };
             
             
@@ -1142,7 +1142,7 @@ namespace Csharp_GUI
 
         private void panel6_mouse_down(object sender, MouseEventArgs e)//horizontal
         {
-            init_rect(sender, e);            
+            init_rect(sender, e, Globals.hrows);            
         }
 
 
@@ -1152,7 +1152,7 @@ namespace Csharp_GUI
             textBox3.Text = textBox3.Text.Replace(x, "");
         }
 
-        public void GUI_to_text()
+        public void GUI_to_text(List<Panel> tray_rows)
         {
             Globals.GUI_active = true;
             bool has_row = false;
@@ -1164,7 +1164,7 @@ namespace Csharp_GUI
             StringBuilder row_field = new StringBuilder();
             for (int i = 0; i < Globals.Max_int + 1; i++)
             {
-                if (i == Globals.Max_int && Globals.hrows[i].BackColor == Color.Gold)
+                if (i == Globals.Max_int && tray_rows[i].BackColor == Color.Gold)
                 {
                     straight_count++;
                     has_row = true;
@@ -1177,9 +1177,9 @@ namespace Csharp_GUI
                         row_field.Append("," + i.ToString());//WOOLOO
                     }
                 }
-                else if (Globals.hrows[i].BackColor == Color.Gold)
+                else if (tray_rows[i].BackColor == Color.Gold)
                 {
-                    if (Globals.hrows[i].BackColor == Color.Gold)
+                    if (tray_rows[i].BackColor == Color.Gold)
                     {
 
                     }
@@ -1226,7 +1226,7 @@ namespace Csharp_GUI
 
         }
 
-        public void init_rect(object sender, MouseEventArgs e/*, List<Panel> tray_rows*/)
+        public void init_rect(object sender, MouseEventArgs e, List<Panel> tray_rows)
         {
             bool CtrlPressed = ModifierKeys.HasFlag(Keys.Control);
             StringBuilder row_field = new StringBuilder();
@@ -1241,49 +1241,40 @@ namespace Csharp_GUI
             {
                 textBox3.Text = "";
             }
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < Globals.Max_int + 1; i++)
             {
                 
-                Rectangle panel_rect = new Rectangle(Globals.hrows[i].Location.X, Globals.hrows[i].Location.Y, Globals.hrows[i].Width, Globals.hrows[i].Height);
+                Rectangle panel_rect = new Rectangle(tray_rows[i].Location.X, tray_rows[i].Location.Y, tray_rows[i].Width, tray_rows[i].Height);
                 if (panel_rect.Contains(Globals.panel_6_cursor) == true)
                 {
                     
-                    if (Globals.hrows[i].BackColor == Color.DarkTurquoise)
+                    if (tray_rows[i].BackColor == Color.DarkTurquoise)
                     {
-                        Globals.hrows[i].BackColor = Color.Gold;
-                        //GUI_to_text();
-                        //if (CtrlPressed == false)
-                        //{
-                        //    textBox3.Text = i.ToString() + ",";//WOOLOO
-                        //}
-                        //else
-                        //{
-                        //    textBox3.Text = textBox3.Text + i.ToString() + ",";//WOOLOO
-                        //}
+                        tray_rows[i].BackColor = Color.Gold;
+
                     }
                     else
                     {
                         //remove_row(i.ToString() + ",");//WOOLOO
                         
-                        Globals.hrows[i].BackColor = Color.DarkTurquoise;
-                        //GUI_to_text();
+                        tray_rows[i].BackColor = Color.DarkTurquoise;
                     }
-                    Globals.currentPanel = Globals.hrows[i];
-                    Globals.currently_active.Add(Globals.hrows[i]);
+                    Globals.currentPanel = tray_rows[i];
+                    Globals.currently_active.Add(tray_rows[i]);
                 }
                 else
                 {
                     if (CtrlPressed == false)
                     {
-                        Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                        tray_rows[i].BackColor = Color.DarkTurquoise;
                     }
                     
                 }
             }
-            GUI_to_text();
+            GUI_to_text(tray_rows);
         }
 
-        public void drag_rect(object sender, MouseEventArgs e)
+        public void drag_rect(object sender, MouseEventArgs e, List<Panel> tray_rows)
         {
             if (Globals.mouse_down == 0)
             {
@@ -1329,31 +1320,31 @@ namespace Csharp_GUI
             label36.Text = "Mouse Move: " + Globals.currentPanel.Location.X.ToString() + " , " + Globals.currentPanel.Location.Y.ToString()
                 +" and list is this long: "+ Globals.currently_active.Count.ToString();
 
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < Globals.Max_int + 1; i++)
             {
-                Rectangle panel_rect = new Rectangle(Globals.hrows[i].Location.X, Globals.hrows[i].Location.Y, Globals.hrows[i].Width, Globals.hrows[i].Height);
+                Rectangle panel_rect = new Rectangle(tray_rows[i].Location.X, tray_rows[i].Location.Y, tray_rows[i].Width, tray_rows[i].Height);
                 if (Globals.select_roi.IntersectsWith(panel_rect))
                 {
-                    if (Globals.currentPanel != Globals.hrows[i] )
+                    if (Globals.currentPanel != tray_rows[i] )
                     {
-                        if (!Globals.currently_active.Contains(Globals.hrows[i]))
+                        if (!Globals.currently_active.Contains(tray_rows[i]))
                         {
-                            if (Globals.hrows[i].BackColor == Color.DarkTurquoise)
+                            if (tray_rows[i].BackColor == Color.DarkTurquoise)
                             {
                                 
                                 //textBox3.Text = textBox3.Text + i.ToString() + ",";//WOOLOO
                                 
-                                Globals.hrows[i].BackColor = Color.Gold;
+                                tray_rows[i].BackColor = Color.Gold;
                                 change_occurred = true;
-                                //Globals.currentPanel = Globals.hrows[i];
+                                //Globals.currentPanel = tray_rows[i];
                             }
                             else
                             {
                                 
                                 //remove_row(i.ToString() + ",");//WOOLOO
-                                Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                                tray_rows[i].BackColor = Color.DarkTurquoise;
                                 change_occurred = true;
-                                //Globals.currentPanel = Globals.hrows[i];
+                                //Globals.currentPanel = tray_rows[i];
                             }
                             //Rectangle last_active = new Rectangle(Globals.currentPanel.Location.X, Globals.currentPanel.Location.Y, Globals.currentPanel.Width, Globals.currentPanel.Height);
                             //if (!Globals.select_roi.IntersectsWith(last_active))
@@ -1362,7 +1353,7 @@ namespace Csharp_GUI
                             //    Globals.currentPanel.BackColor = Color.DarkTurquoise;
                             //}
                             
-                            Globals.currently_active.Add(Globals.hrows[i]);
+                            Globals.currently_active.Add(tray_rows[i]);
                         }
                         else
                         {
@@ -1375,16 +1366,16 @@ namespace Csharp_GUI
                                 if (Globals.currentPanel.BackColor == Color.Gold)
                                 {
                                     
-                                    //remove_row(Globals.hrows.IndexOf(Globals.currentPanel).ToString() + ",");//WOOLOO
+                                    //remove_row(tray_rows.IndexOf(Globals.currentPanel).ToString() + ",");//WOOLOO
                                     Globals.currentPanel.BackColor = Color.DarkTurquoise;
                                     change_occurred = true;
-                                    //Globals.currentPanel = Globals.hrows[i];
+                                    //Globals.currentPanel = tray_rows[i];
                                 }
                                 else
                                 {
                                     Globals.currentPanel.BackColor = Color.Gold;
                                     change_occurred = true;
-                                    //textBox3.Text = textBox3.Text + Globals.hrows.IndexOf(Globals.currentPanel).ToString() + ",";//WOOLOO
+                                    //textBox3.Text = textBox3.Text + tray_rows.IndexOf(Globals.currentPanel).ToString() + ",";//WOOLOO
                                 }
                                 label37.Text = "If Good" ;
                             }
@@ -1394,7 +1385,7 @@ namespace Csharp_GUI
                             }
                         }
                         Globals.currentPanel = Globals.currently_active[Globals.currently_active.Count - 1];
-                        //Globals.currentPanel = Globals.hrows[i];
+                        //Globals.currentPanel = tray_rows[i];
                     }// if not in same pamel
                     else
                     {
@@ -1403,19 +1394,19 @@ namespace Csharp_GUI
                 }
                 else//not intersect with roi
                 {
-                    if (Globals.currentPanel != Globals.hrows[i])
+                    if (Globals.currentPanel != tray_rows[i])
                     {
-                        if (Globals.currently_active.Contains(Globals.hrows[i]))
+                        if (Globals.currently_active.Contains(tray_rows[i]))
                         {
                            // Globals.currently_active.Remove(Globals.currentPanel);
                         }
                     }
 
-                    if (Globals.currently_active.Contains(Globals.hrows[i]) )
+                    if (Globals.currently_active.Contains(tray_rows[i]) )
                     {
                         if (CtrlPressed == false)
                         {
-                         //   Globals.currently_active.Remove(Globals.hrows[i]);
+                         //   Globals.currently_active.Remove(tray_rows[i]);
                          //   Globals.currentPanel.BackColor = Color.DarkTurquoise;
                         }
                         else
@@ -1432,19 +1423,19 @@ namespace Csharp_GUI
                     //
                     //if (CtrlPressed == false)
                     //{
-                    //    Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                    //    tray_rows[i].BackColor = Color.DarkTurquoise;
                     //}
                 }
             }
             if (change_occurred == true)
             {
-                GUI_to_text();
+                GUI_to_text(tray_rows);
             }
         }
 
         private void panel6_mouse_move(object sender, MouseEventArgs e)
         {
-            drag_rect(sender, e);
+            drag_rect(sender, e, Globals.hrows);
         }
 
         public bool boundary_detection(Panel panel)
@@ -1490,18 +1481,28 @@ namespace Csharp_GUI
 
         private void Vpanel_clicked(object sender, MouseEventArgs e)
         {
-            init_rect(sender, e);
+            init_rect(sender, e, Globals.hrows);
         }
 
         private void Vpanel_mouse_move(object sender, MouseEventArgs e)
         {
             
-            drag_rect(sender, e);
+            drag_rect(sender, e, Globals.hrows);
         }
 
         private void Vpanel_mouse_up(object sender, MouseEventArgs e)
         {
             mouse_up();
+        }
+
+        private void Hpanel_clicked(object sender, MouseEventArgs e)
+        {
+            init_rect(sender, e, Globals.vrows);
+        }
+
+        private void Hpanel_mouse_move(object sender, MouseEventArgs e)
+        {
+            drag_rect(sender, e, Globals.vrows);
         }
 
         //private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
