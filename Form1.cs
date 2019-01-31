@@ -1139,6 +1139,11 @@ namespace Csharp_GUI
             init_rect(sender, e);            
         }
 
+        public void remove_row(string x)
+        {
+            textBox3.Text = textBox3.Text.Replace(x, "");
+        }
+
         public void init_rect(object sender, MouseEventArgs e)
         {
             bool CtrlPressed = ModifierKeys.HasFlag(Keys.Control);
@@ -1150,18 +1155,32 @@ namespace Csharp_GUI
             Globals.panel_6_cursor.Y = Globals.panel_6_cursor.Y + relative_location.Y;
             //textBox3
             Globals.mouse_down = 1;
+            if (CtrlPressed == false)
+            {
+                textBox3.Text = "";
+            }
             for (int i = 0; i < 12; i++)
             {
                 
                 Rectangle panel_rect = new Rectangle(Globals.hrows[i].Location.X, Globals.hrows[i].Location.Y, Globals.hrows[i].Width, Globals.hrows[i].Height);
                 if (panel_rect.Contains(Globals.panel_6_cursor) == true)
                 {
+                    
                     if (Globals.hrows[i].BackColor == Color.DarkTurquoise)
                     {
                         Globals.hrows[i].BackColor = Color.Gold;
+                        if (CtrlPressed == false)
+                        {
+                            textBox3.Text = i.ToString() + ",";//WOOLOO
+                        }
+                        else
+                        {
+                            textBox3.Text = textBox3.Text + i.ToString() + ",";//WOOLOO
+                        }
                     }
                     else
                     {
+                        remove_row(i.ToString() + ",");//WOOLOO
                         Globals.hrows[i].BackColor = Color.DarkTurquoise;
                     }
                     Globals.currentPanel = Globals.hrows[i];
@@ -1176,6 +1195,7 @@ namespace Csharp_GUI
                     
                 }
             }
+            
         }
 
         public void drag_rect(object sender, MouseEventArgs e)
@@ -1234,11 +1254,13 @@ namespace Csharp_GUI
                         {
                             if (Globals.hrows[i].BackColor == Color.DarkTurquoise)
                             {
+                                textBox3.Text = textBox3.Text + i.ToString() + ",";//WOOLOO
                                 Globals.hrows[i].BackColor = Color.Gold;
                                 //Globals.currentPanel = Globals.hrows[i];
                             }
                             else
                             {
+                                remove_row(i.ToString() + ",");//WOOLOO
                                 Globals.hrows[i].BackColor = Color.DarkTurquoise;
                                 //Globals.currentPanel = Globals.hrows[i];
                             }
@@ -1261,13 +1283,15 @@ namespace Csharp_GUI
                                 //if()
                                 if (Globals.currentPanel.BackColor == Color.Gold)
                                 {
+
+                                    remove_row(Globals.hrows.IndexOf(Globals.currentPanel).ToString() + ",");//WOOLOO
                                     Globals.currentPanel.BackColor = Color.DarkTurquoise;
                                     //Globals.currentPanel = Globals.hrows[i];
                                 }
                                 else
                                 {
                                     Globals.currentPanel.BackColor = Color.Gold;
-                                    //Globals.currentPanel = Globals.hrows[i];
+                                    textBox3.Text = textBox3.Text + Globals.hrows.IndexOf(Globals.currentPanel).ToString() + ",";//WOOLOO
                                 }
                                 label37.Text = "If Good" ;
                             }
