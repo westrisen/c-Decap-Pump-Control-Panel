@@ -59,6 +59,7 @@ namespace Csharp_GUI
             this.button4 = new System.Windows.Forms.Button();
             this.ON_OFF_button = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label38 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
             this.label36 = new System.Windows.Forms.Label();
             this.panel27 = new System.Windows.Forms.Panel();
@@ -651,6 +652,7 @@ namespace Csharp_GUI
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label38);
             this.tabPage2.Controls.Add(this.label37);
             this.tabPage2.Controls.Add(this.label36);
             this.tabPage2.Controls.Add(this.panel27);
@@ -667,6 +669,15 @@ namespace Csharp_GUI
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Fill Commands";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(179, 468);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(40, 13);
+            this.label38.TabIndex = 62;
+            this.label38.Text = "Hmm...";
             // 
             // label37
             // 
@@ -2145,7 +2156,7 @@ namespace Csharp_GUI
             // 
             this.checkBox8.AutoSize = true;
             this.checkBox8.BackColor = System.Drawing.Color.Transparent;
-            this.checkBox8.Location = new System.Drawing.Point(54, 255);
+            this.checkBox8.Location = new System.Drawing.Point(49, 255);
             this.checkBox8.Name = "checkBox8";
             this.checkBox8.Size = new System.Drawing.Size(63, 17);
             this.checkBox8.TabIndex = 42;
@@ -2156,7 +2167,7 @@ namespace Csharp_GUI
             // 
             this.checkBox9.AutoSize = true;
             this.checkBox9.BackColor = System.Drawing.Color.Transparent;
-            this.checkBox9.Location = new System.Drawing.Point(54, 235);
+            this.checkBox9.Location = new System.Drawing.Point(49, 235);
             this.checkBox9.Name = "checkBox9";
             this.checkBox9.Size = new System.Drawing.Size(63, 17);
             this.checkBox9.TabIndex = 41;
@@ -2167,7 +2178,7 @@ namespace Csharp_GUI
             // 
             this.checkBox10.AutoSize = true;
             this.checkBox10.BackColor = System.Drawing.Color.Transparent;
-            this.checkBox10.Location = new System.Drawing.Point(54, 215);
+            this.checkBox10.Location = new System.Drawing.Point(49, 215);
             this.checkBox10.Name = "checkBox10";
             this.checkBox10.Size = new System.Drawing.Size(63, 17);
             this.checkBox10.TabIndex = 40;
@@ -2177,7 +2188,7 @@ namespace Csharp_GUI
             // checkBox11
             // 
             this.checkBox11.AutoSize = true;
-            this.checkBox11.Location = new System.Drawing.Point(54, 195);
+            this.checkBox11.Location = new System.Drawing.Point(49, 195);
             this.checkBox11.Name = "checkBox11";
             this.checkBox11.Size = new System.Drawing.Size(57, 17);
             this.checkBox11.TabIndex = 39;
@@ -2187,7 +2198,7 @@ namespace Csharp_GUI
             // checkBox12
             // 
             this.checkBox12.AutoSize = true;
-            this.checkBox12.Location = new System.Drawing.Point(54, 175);
+            this.checkBox12.Location = new System.Drawing.Point(49, 175);
             this.checkBox12.Name = "checkBox12";
             this.checkBox12.Size = new System.Drawing.Size(57, 17);
             this.checkBox12.TabIndex = 38;
@@ -2197,7 +2208,7 @@ namespace Csharp_GUI
             // checkBox13
             // 
             this.checkBox13.AutoSize = true;
-            this.checkBox13.Location = new System.Drawing.Point(54, 155);
+            this.checkBox13.Location = new System.Drawing.Point(49, 155);
             this.checkBox13.Name = "checkBox13";
             this.checkBox13.Size = new System.Drawing.Size(57, 17);
             this.checkBox13.TabIndex = 37;
@@ -2207,7 +2218,7 @@ namespace Csharp_GUI
             // checkBox5
             // 
             this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(54, 135);
+            this.checkBox5.Location = new System.Drawing.Point(49, 135);
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(57, 17);
             this.checkBox5.TabIndex = 36;
@@ -2217,7 +2228,7 @@ namespace Csharp_GUI
             // checkBox6
             // 
             this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(54, 115);
+            this.checkBox6.Location = new System.Drawing.Point(49, 115);
             this.checkBox6.Name = "checkBox6";
             this.checkBox6.Size = new System.Drawing.Size(57, 17);
             this.checkBox6.TabIndex = 35;
@@ -2227,7 +2238,7 @@ namespace Csharp_GUI
             // checkBox7
             // 
             this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(54, 95);
+            this.checkBox7.Location = new System.Drawing.Point(49, 95);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(57, 17);
             this.checkBox7.TabIndex = 34;
@@ -2237,7 +2248,7 @@ namespace Csharp_GUI
             // checkBox4
             // 
             this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(54, 75);
+            this.checkBox4.Location = new System.Drawing.Point(49, 75);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(57, 17);
             this.checkBox4.TabIndex = 33;
@@ -2247,7 +2258,7 @@ namespace Csharp_GUI
             // checkBox3
             // 
             this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(54, 55);
+            this.checkBox3.Location = new System.Drawing.Point(49, 55);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(57, 17);
             this.checkBox3.TabIndex = 32;
@@ -2257,7 +2268,7 @@ namespace Csharp_GUI
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(54, 35);
+            this.checkBox2.Location = new System.Drawing.Point(49, 35);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(57, 17);
             this.checkBox2.TabIndex = 31;
@@ -5195,6 +5206,7 @@ namespace Csharp_GUI
         private Label label36;
         private Panel hiddenPanel;
         private Label label37;
+        private Label label38;
 
     }
 

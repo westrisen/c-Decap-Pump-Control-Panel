@@ -1139,9 +1139,84 @@ namespace Csharp_GUI
             init_rect(sender, e);            
         }
 
+
+
         public void remove_row(string x)
         {
             textBox3.Text = textBox3.Text.Replace(x, "");
+        }
+
+        public void GUI_to_text()
+        {
+            bool has_row = false;
+            int straight_count = 0;
+            bool consecutive = false;
+            int first;
+            int last;
+            textBox3.Text = "";
+            StringBuilder row_field = new StringBuilder();
+            for (int i = 0; i < Globals.Max_int + 1; i++)
+            {
+                if (i == Globals.Max_int && Globals.hrows[i].BackColor == Color.Gold)
+                {
+                    straight_count++;
+                    has_row = true;
+                    if (consecutive == true)
+                    {
+                        row_field.Append("-" + i.ToString());//WOOLOO
+                    }
+                    else
+                    {
+                        row_field.Append("," + i.ToString());//WOOLOO
+                    }
+                }
+                else if (Globals.hrows[i].BackColor == Color.Gold)
+                {
+                    if (Globals.hrows[i].BackColor == Color.Gold)
+                    {
+
+                    }
+                    has_row = true;
+
+                    if (consecutive == false)
+                    {
+                        straight_count++;
+                        consecutive = true;
+                        row_field.Append("," + i.ToString());//WOOLOO
+                    }
+                    else//if consecutive
+                    {
+                        straight_count++;
+                        // row_field.Append("-");
+
+                    }
+                }
+                else //if darkturquiose
+                {
+
+                    if (consecutive == true && straight_count > 1)
+                    {
+                        int j = i - 1;//WOOLOO
+                        row_field.Append("-" + j.ToString());//WOOLOO
+                    }
+                    consecutive = false;
+                    //row_field.Append(",");
+                    straight_count = 0;
+                }
+            }
+            if (row_field.Length > 1)
+            {
+                row_field.Remove(0, 1);
+            }
+            if (has_row == true)
+            {
+                textBox3.Text = row_field.ToString();
+            }
+            else
+            {
+                textBox3.Text = "";
+            }
+
         }
 
         public void init_rect(object sender, MouseEventArgs e)
@@ -1169,19 +1244,22 @@ namespace Csharp_GUI
                     if (Globals.hrows[i].BackColor == Color.DarkTurquoise)
                     {
                         Globals.hrows[i].BackColor = Color.Gold;
-                        if (CtrlPressed == false)
-                        {
-                            textBox3.Text = i.ToString() + ",";//WOOLOO
-                        }
-                        else
-                        {
-                            textBox3.Text = textBox3.Text + i.ToString() + ",";//WOOLOO
-                        }
+                        //GUI_to_text();
+                        //if (CtrlPressed == false)
+                        //{
+                        //    textBox3.Text = i.ToString() + ",";//WOOLOO
+                        //}
+                        //else
+                        //{
+                        //    textBox3.Text = textBox3.Text + i.ToString() + ",";//WOOLOO
+                        //}
                     }
                     else
                     {
-                        remove_row(i.ToString() + ",");//WOOLOO
+                        //remove_row(i.ToString() + ",");//WOOLOO
+                        
                         Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                        //GUI_to_text();
                     }
                     Globals.currentPanel = Globals.hrows[i];
                     Globals.currently_active.Add(Globals.hrows[i]);
@@ -1195,7 +1273,7 @@ namespace Csharp_GUI
                     
                 }
             }
-            
+            GUI_to_text();
         }
 
         public void drag_rect(object sender, MouseEventArgs e)
@@ -1204,6 +1282,7 @@ namespace Csharp_GUI
             {
                 return;
             }
+            bool change_occurred = false;
             bool CtrlPressed = ModifierKeys.HasFlag(Keys.Control);
             //this.Cursor = new Cursor(Cursor.Current.Handle);
             Panel senderobj = (Panel)sender;
@@ -1254,14 +1333,19 @@ namespace Csharp_GUI
                         {
                             if (Globals.hrows[i].BackColor == Color.DarkTurquoise)
                             {
-                                textBox3.Text = textBox3.Text + i.ToString() + ",";//WOOLOO
+                                
+                                //textBox3.Text = textBox3.Text + i.ToString() + ",";//WOOLOO
+                                
                                 Globals.hrows[i].BackColor = Color.Gold;
+                                change_occurred = true;
                                 //Globals.currentPanel = Globals.hrows[i];
                             }
                             else
                             {
-                                remove_row(i.ToString() + ",");//WOOLOO
+                                
+                                //remove_row(i.ToString() + ",");//WOOLOO
                                 Globals.hrows[i].BackColor = Color.DarkTurquoise;
+                                change_occurred = true;
                                 //Globals.currentPanel = Globals.hrows[i];
                             }
                             //Rectangle last_active = new Rectangle(Globals.currentPanel.Location.X, Globals.currentPanel.Location.Y, Globals.currentPanel.Width, Globals.currentPanel.Height);
@@ -1283,15 +1367,17 @@ namespace Csharp_GUI
                                 //if()
                                 if (Globals.currentPanel.BackColor == Color.Gold)
                                 {
-
-                                    remove_row(Globals.hrows.IndexOf(Globals.currentPanel).ToString() + ",");//WOOLOO
+                                    
+                                    //remove_row(Globals.hrows.IndexOf(Globals.currentPanel).ToString() + ",");//WOOLOO
                                     Globals.currentPanel.BackColor = Color.DarkTurquoise;
+                                    change_occurred = true;
                                     //Globals.currentPanel = Globals.hrows[i];
                                 }
                                 else
                                 {
                                     Globals.currentPanel.BackColor = Color.Gold;
-                                    textBox3.Text = textBox3.Text + Globals.hrows.IndexOf(Globals.currentPanel).ToString() + ",";//WOOLOO
+                                    change_occurred = true;
+                                    //textBox3.Text = textBox3.Text + Globals.hrows.IndexOf(Globals.currentPanel).ToString() + ",";//WOOLOO
                                 }
                                 label37.Text = "If Good" ;
                             }
@@ -1342,6 +1428,10 @@ namespace Csharp_GUI
                     //    Globals.hrows[i].BackColor = Color.DarkTurquoise;
                     //}
                 }
+            }
+            if (change_occurred == true)
+            {
+                GUI_to_text();
             }
         }
 
