@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.IO.Ports;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.IO;
 //using System.Threading.Tasks;
 
 namespace Csharp_GUI
@@ -83,6 +84,8 @@ namespace Csharp_GUI
             string Com_Number = Com_Select.Text;
             connection_status = 1;
 
+            //DEBUG
+            /*
             Globals.FluidxPort = new SerialPort("COM" + Com_Number, 9600, Parity.Odd, 8, StopBits.One);
             try
             {
@@ -91,11 +94,14 @@ namespace Csharp_GUI
             catch (Exception) { Application.Exit(); }
 
             // Globals.FluidxPort.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
+
+
             portWrite("kl \r");
             portWrite("cm \r");
             portWrite("kl \r");
             portWrite("PIN\r");
             portWrite("seto 0 \r");
+             * */
             Globals.Max_int = 7;
 
 //foreach(Panel
@@ -104,8 +110,9 @@ namespace Csharp_GUI
             Globals.hrows = new List<Panel> { panel14, panel16, panel17, panel18, panel10, panel11, panel12, panel13, panel8, panel9, panel7, panel15, };
             Globals.vrows = new List<Panel> {panel23, panel24, panel25, panel26, panel21, panel22, panel20, panel19 };
             Globals.currently_active = new List<Panel> { };
-            
-            
+
+            button35.Visible = true;
+            button35.Enabled = true;
             radioButton10.Checked = true;
             One_Cycle.Checked = true;
             tabControl1.Enabled = true;
@@ -358,6 +365,7 @@ namespace Csharp_GUI
 
         public Thread StartButtonThread(Func<int> functionName)
         {
+            Globals.Halt = false;
             tabControl1.Enabled = false;
             groupBox6.Enabled = false;
             panel5.Enabled = false;
@@ -375,7 +383,11 @@ namespace Csharp_GUI
 
         private void fire_commands(string single_command, string row_field, string arg2, string arg3, string arg4)
         {
-            
+            /*for(int i = 0; i < limit; i++){
+             * 
+             * 
+             *}
+             * */
             StringBuilder return_code = new StringBuilder();
             int end_number = -1;
             StringBuilder end_string = new StringBuilder();
@@ -417,7 +429,7 @@ namespace Csharp_GUI
                     forming_number = forming_number * 10 + (int)char.GetNumericValue(row_field[i]);
                 }
 
-                    //NO HYPHEN
+                //NO HYPHEN
                 else if (hyphen == false && (row_field[i] == '.' || row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
                 {
                     
@@ -453,7 +465,7 @@ namespace Csharp_GUI
                     //status_report.Text = Globals.FluidxPort.ReadLine();
                 }//elseif NO HYPHEN
 
-                    //HYPHEN
+                //HYPHEN
                 else if (hyphen == true && (row_field[i] == '.' || row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
                 {
 
@@ -564,7 +576,7 @@ namespace Csharp_GUI
                     forming_number = forming_number * 10 + (int)char.GetNumericValue(row_field[i]);
                 }
 
-                    //NO HYPHEN
+                //NO HYPHEN
                 else if (hyphen == false && (row_field[i] == '.' || row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
                 {
 
@@ -582,7 +594,7 @@ namespace Csharp_GUI
                     forming_number = -1;
                 }//elseif NO HYPHEN
 
-                    //HYPHEN
+                //HYPHEN
                 else if (hyphen == true && (row_field[i] == '.' || row_field[i] == ',' || row_field[i] == ' ' || row_field[i] == '\n' || row_field[i] == '\0'))
                 {
 
@@ -609,9 +621,6 @@ namespace Csharp_GUI
                             forming_number_string.Append((j + 1).ToString());
                         }
                     }
-
-
-
 
                     parameter.Clear();
                     command.Clear();
@@ -669,12 +678,59 @@ namespace Csharp_GUI
             Globals.FluidxPort.Write(new byte[] { 0x6B, 0x6C, 0x0D }, 0, 3);
             Globals.FluidxPort.ReadLine();
             Globals.FluidxPort.Write(message);
+            
             progress_report.Text = "Processing: " + message;
-            status_report.Text = "Status report: " + Globals.FluidxPort.ReadLine();
-
+            string error_report = Globals.FluidxPort.ReadLine();
+            if(Globals.Error_Handling == true){
+                parse_return_code(error_report);
+            }
+            status_report.Text = "Status report: " + error_report;
         }
 
+        /*This function checks the value of the return codes. Non-zero return codes represent errors.
+         * When an error is detected in errror-detection mode, the global Halt signal is broadcasted.
+         */
+        public void parse_return_code(string message)
+        {
+            //StringBuilder coutval = new StringBuilder();
+            //System.Char.IsDigit(row_field, i)
+            //bool in_error_code = false;
+            for (int i = message.Length - 1; i >= 0; i--)
+            {
+                
+                if (System.Char.IsDigit(message, i) == true && message[i] != '0')
+                {
+                    //coutval.Append(message[i]);
+                    //Stop_Button.Text = coutval.ToString();
+                    Globals.Halt = true;
+                    return;
+                }
+                if(message[i] == '<')
+                {
+                    //coutval.Clear();
+                    return;
+                }
 
+                //if (message[i] == '>')
+                //{
+                //    in_error_code = true;
+                //}
+                //else if (in_error_code == true)
+                //{
+                    
+                //    if (message[i] != '0')
+                //    {
+                //        Stop_Button.Text = message;
+                //        Globals.Halt = true;
+                //        return;
+                //    }
+                //    else if (message[i] == '<')
+                //    {
+                //        return;
+                //    }
+                //}
+            }
+        }
 
         private void select_command(SerialPort port)
         {
@@ -1591,6 +1647,97 @@ namespace Csharp_GUI
             textBox8.Text = "";
         }
 
+        private void button35_Click(object sender, EventArgs e)
+        {
+            if (Globals.Error_Handling == true)
+            {
+                Globals.Error_Handling = false;
+                button35.Text = "Error Handling: Off";
+            }
+            else
+            {
+                Globals.Error_Handling = true;
+                button35.Text = "Error Handling: On";
+            }
+        }
+
+        public int tsCmd_reponse()
+        {
+            
+            if (textBox6.Text.Length == 0)
+            {
+                closeThread();
+                return 0;
+            }
+            portWrite(textBox6.Text + "\r");
+            textBox6.Text = "";
+            closeThread();
+            //Stop_Button.SelectNextControl(button32, true, true, true, true);
+            //textBox6.Focus();
+            //button35.SelectNextControl(textBox6, true,true,true,true);
+            return 0;
+        }
+
+        private void Cmd_Enter(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                StartButtonThread(tsCmd_reponse);
+            }
+            
+            //textBox6.Focus();
+            //ActiveControl = textBox6;
+        }
+
+        private void button15_Click(object sender, EventArgs e)//CAP ALL
+        {
+            StartButtonThread(tsCapAll);
+        }
+
+        public int tsCapAll()
+        {
+            string row_field = "0-" + Globals.Max_int.ToString() + "\0";
+            fire_commands("rcap", row_field, "", "", "");
+            Globals.FluidxBusy = false;
+            closeThread();
+            return 0;
+        }
+
+        private void button16_Click(object sender, EventArgs e)//DECAP ALL
+        {
+            StartButtonThread(tsDecapAll);
+        }
+
+        public int tsDecapAll()
+        {
+            string row_field = "0-" + Globals.Max_int.ToString() + "\0";
+            fire_commands("dcap", row_field, "", "", "");
+            Globals.FluidxBusy = false;
+            closeThread();
+            return 0;
+        }
+
+        private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
+        {
+
+        }
+
+        private void worklist_button_Click(object sender, EventArgs e)
+        {
+            StringBuilder line = new StringBuilder();
+            Stream fileStream = null;
+            if (selectFileDialog.ShowDialog() == DialogResult.OK && (fileStream = selectFileDialog.OpenFile()) != null)
+            {
+                string fileName = selectFileDialog.FileName;
+                using (fileStream)
+                {
+                    string[] lines = System.IO.File.ReadAllLines(@fileName);
+                    label81.Text = lines[1];
+                    //TODO: More worklist specifications
+                }
+            }
+        }
+
         //private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         //{
         //    var port = (SerialPort)sender;
@@ -1613,6 +1760,7 @@ namespace Csharp_GUI
 
     public class Globals
     {
+        public static bool Error_Handling = true;
         public static bool GUI_active = false;
         public static List<Panel> currently_active;
         public static Panel currentPanel;
